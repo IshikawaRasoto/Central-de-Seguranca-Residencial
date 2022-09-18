@@ -5,7 +5,6 @@
 */
 
 #include <WiFi.h>
-#include <ESP32Ping.h>
 #include <EEPROM.h>
 #include <Ethernet.h>
 #include <WebServer.h>
@@ -22,6 +21,7 @@ volatile bool statusModoAP;
 WebServer server (80);
 
 void limparMemoria(){
+    Serial.println("Limpando a Memoria");
     for(unsigned int i = 0; i < 250; i++){
         EEPROM.writeByte(i, 0);
     }
@@ -40,14 +40,11 @@ bool testeCredenciais(){
 }
 
 void conectaWiFi(){
-    ssid = EEPROM.readString(0);
-    senha = EEPROM.readString(50);
-
     char char_ssid [30];
     char char_senha [30];
 
     ssid.toCharArray(char_ssid, 30);
-    ssid.toCharArray(char_senha, 30);
+    senha.toCharArray(char_senha, 30);
 
     WiFi.begin(char_ssid, char_senha);
 
@@ -55,11 +52,6 @@ void conectaWiFi(){
 }
 
 void testeConexao(){
-    bool ping = Ping.ping("www.google.com", 3);
-    if(ping){
-        Serial.println("Internet OK");
-        return;
-    }
 
     if(WiFi.status() == WL_CONNECTED){
         Serial.println("WiFi OK");
@@ -67,6 +59,7 @@ void testeConexao(){
     }
 
     Serial.println("WiFi NOK");
+    conectaWiFi();
 }
 
 bool escreverNaMemoria(String ssidAUX, String senhaAUX, String tokenAUX, String chatIDAUX){
@@ -139,6 +132,10 @@ void enviarFormulario(){
     const char* ssid_AP = "Central_De_Seguranca";
     const char* senha_AP = "CentralSEG!2022";
 
+    Serial.println("SSID da ESP: Central_De_Seguranca");
+    Serial.println("Senha da ESP: CentralSEG!2022");
+    Serial.println("IP no navegador: 192.168.4.1");
+
     WiFi.softAP(ssid_AP, senha_AP);
 
     IPAddress IP = WiFi.softAPIP();
@@ -155,7 +152,7 @@ void enviarFormulario(){
     }
 }
 
-void IRAM_ATTR sensorDePresenca(){
+void IRAM_ATTR interrupcaoBotao(){
    statusModoAP = true;
 }
 
@@ -167,14 +164,30 @@ void setup(){
 
     statusModoAP = false;
 
-    attachInterrupt(25, sensorDePresenca, RISING);
+    ssid = EEPROM.readString(0);
+    senha = EEPROM.readString(50);
+    chatID = EEPROM.readString(100);
+    token = EEPROM.readString(150);
+
+    Serial.println("Credenciais do Wi-Fi Cadastradas");
+    Serial.println("SSID:" + ssid);
+    Serial.println("Senha:"+ senha);
+    Serial.println("Token: "+ token);
+    Serial.println("chatID: "+ chatID);
+
+    conectaWiFi();
+
+    pinMode(25, INPUT);
+    attachInterrupt(25, interrupcaoBotao, RISING);
 }
 
 void loop (){
+    testeConexao();
     if(statusModoAP)
         limparMemoria();
     if(!testeCredenciais()){
         Serial.println("modoAP");
         enviarFormulario();
     }
+    
 }
