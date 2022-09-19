@@ -6,14 +6,16 @@
 
 <img src="https://github.com/IshikawaRasoto/Central-de-Seguranca-Residencial/blob/main/Teste/DisplayNokia/assets/PinosDisplayNokia5110.png" width = 300>
 
-#### →Pino 1: Reset <br />
-#### →Pino 2: Chip Enable(CE) <br />
-#### →Pino 3: Data/Command(DC) <br />
-#### →Pino 4: Serial IN(DIN) <br />
-#### →Pino 5: Clock(CLK) <br />
-#### →Pino 6: Power(VCC) <br />
-#### →Pino 7: Back Light(BL) <br />
-#### →Pino 8: Ground(GND) <br />
+> #### Pino 1: Reset <br />
+> #### Pino 2: Chip Enable(CE) <br />
+> #### Pino 3: Data/Command(DC) <br />
+> #### Pino 4: Serial IN(DIN) <br />
+> #### Pino 5: Clock(CLK) <br />
+> #### Pino 6: Power(VCC) <br />
+> #### Pino 7: Back Light(BL) <br />
+> #### Pino 8: Ground(GND) <br />
+
+
 
 ___
 
@@ -37,18 +39,18 @@ ___
 
 #### 1. Ache a imagem desejada e a baixe
 #### 2. Após ter a imagem, você precisa transformar o formato da imagem para .bmp. Você pode fazer isso de diversas formas, como, por exemplo, no software Paint.
-#### 3. Agora, tendo a imagem convertida, acesse https://javl.github.io/image2cpp/ e siga os passos a baixo:
-##### 3.1 Importe a imagem no site[1].
-##### 3.2 Mude a proporção da imagem para o tamanho desejado. *Lembre-se que o Display Nokia a5110 tem a proporção de 84x48!*
-##### 3.3 Defina o estilo da imagem[2]. 
-###### Recomendação: Selecione white; Inverta a cor da imagem; Ajuste a luminosidade para 225; *Mude a escala para: "stretch to fill canvas"*.
-##### 3.4 Clique em gerar código e copie apenas a informação do vetor. Isto é, a imagem em bitmap.
+#### 3. Agora, tendo a imagem convertida, acesse [aqui](https://javl.github.io/image2cpp/) e siga os passos a baixo:
+> ##### 3.1 Importe a imagem no site[1].
+> ##### 3.2 Mude a proporção da imagem para o tamanho desejado. *Lembre-se que o Display Nokia a5110 tem a proporção de 84x48!*
+> ##### 3.3 Defina o estilo da imagem[2]. 
+> ###### Recomendação: Selecione white; Inverta a cor da imagem; Ajuste a luminosidade para 225; *Mude a escala para: "stretch to fill canvas"*.
+> ##### 3.4 Clique em gerar código e copie apenas a informação do vetor. Isto é, a imagem em bitmap.
 
-#### 4. Após tem a informação que precisamos, criamos em nosso código o vetor que armazenará nossa imagem. Sua assinatura será: `static const uint8_t arduino_icon[1024] =`.
+#### 4. Após ter a informação que precisamos, criamos em nosso código o vetor que armazenará nossa imagem. Sua assinatura será: `static const uint8_t arduino_icon[1024] =`.
 #### 5. Atribua ao vetor o código que obtivemos do site. Isto é, a imagem em bitmap.
 #### 6. Após os passos, sua imagem já está pronta para ser usada no código. Você vai a implementar por meio da função `drawBitmap()`.
 
-##### *Observação: você pode importar imagens de qualquer estilo, mas, lembre-se, como a dimensão do display é pequena, a imagem se redimensionará para aquela proporção, o que pode ocasionar perda de detalhes. Além disso, o display funciona no formato monocromático, impossibilitando uma paleta de cores além de preto e branco.*
+> ##### *Observação: você pode importar imagens de qualquer estilo, mas, lembre-se, como a dimensão do display é pequena, a imagem se redimensionará para aquela proporção, o que pode ocasionar perda de detalhes. Além disso, o display funciona no formato monocromático, impossibilitando uma paleta de cores além de preto e branco.*
 
 ## Entendendo o `drawBitmap()`
 ### Explicarei a função por meio de um exemplo. Entendendo as relações, use-as de acordo com o seu propósito.
@@ -60,5 +62,5 @@ ___
 
 <br />
 
-###### *Para mais informações, acesse: https://microcontrollerslab.com/nokia-5110-lcd-esp32-tutorial/*
+###### *Para mais informações, acesse: [referência](https://microcontrollerslab.com/nokia-5110-lcd-esp32-tutorial/)*
 
