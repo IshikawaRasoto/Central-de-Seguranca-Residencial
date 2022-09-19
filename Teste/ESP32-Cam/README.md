@@ -1,13 +1,37 @@
 # Conexão e compilação
 
 ## ESP32-Cam usando Arduino Uno:
-asas
+<img src="https://github.com/IshikawaRasoto/Central-de-Seguranca-Residencial/blob/main/Teste/ESP32-Cam/assets/ESP32CAM-ARDUINO_UNO.png" width = 700>
 
 
 ## ESP32-Cam usando FTDI:
-sasa
+<img src="https://github.com/IshikawaRasoto/Central-de-Seguranca-Residencial/blob/main/Teste/ESP32-Cam/assets/ESP32CAM-FTDI.png" width = 700>
+<img src="https://github.com/IshikawaRasoto/Central-de-Seguranca-Residencial/blob/main/Teste/ESP32-Cam/assets/Pinos-FTDI.jpg" width = 700>
 
 
 # Configurações no Arduino IDE
 
-##Ferramentas 
+## Vá até Ferramentas nas configurações da IDE
+#### •Placa: "ESP32 Wrover Module"
+#### •Upload Speed: "115200"
+#### •Flash Frequency: "40MHz"
+#### •Flash Mode: "QIO"
+#### •Partition Scheme: "Huge APP (3MB No OTA/1MB SPIFFS")
+
+## Não se esqueça de
+#### !Certificar que a porta configurada é a conectada
+#### !Certificar que todas as bibliotecas estão instaladas
+#### !Configurar a rede wi-fi 
+#### !Configurar o BOTtoken
+#### !Configurar o CHAT_ID
+
+
+
+
+
+
+# Instruções para compilação correta na ESP32-Cam
+
+### 1. Compile 
+### 2. Após compilar, desfaça a conexão entre o GPIO 0 e o GND. Explicação: Esse curto-circuito faz com que a ESP32-Cam entre em seu modo programável. Desfazendo a conexão, ela volta para o modo funcional. 
+### 3. Resete a placa apertando o botão de reset. Explicação: Resetando você faz com que a ESP funcione de acordo com o último código compilado.
