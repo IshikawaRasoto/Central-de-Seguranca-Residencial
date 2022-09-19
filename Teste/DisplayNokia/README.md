@@ -52,3 +52,7 @@
 ##### •*[4, 5]* Os dois próximos parâmetros são a proporção de nossa imagem. Lembra que no site onde pegamos a informação de nosso vetor, informamos a proporção da imagem? Pois bem, você informará essa proporção neste parâmetro, respectivamente, o X e o Y. No caso do exemplo, nossa imagem tem proporção 20x20.
 ##### •*[6]* O último se refere a estilização da imagem, ou seja, preto(0) ou branco(1).
 
+<br />
+
+###### *Para mais informações, acesse: https://microcontrollerslab.com/nokia-5110-lcd-esp32-tutorial/*
+
