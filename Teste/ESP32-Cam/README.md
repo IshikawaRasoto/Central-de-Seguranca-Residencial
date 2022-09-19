@@ -20,7 +20,7 @@
 
 > #### Se certifique que a porta configurada é a conectada
 > #### Se certificque que todas as bibliotecas estão instaladas
-> #### Configure a rede wi-fi 
+> #### Configure a rede Wi-Fi 
 > #### Configure o BOTtoken
 > #### Configure o CHAT_ID
 
