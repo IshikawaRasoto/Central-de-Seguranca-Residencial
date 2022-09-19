@@ -27,8 +27,10 @@
 
 # Instruções para compilação correta na ESP32-Cam
 
-### 1. Compile 
-### 2. Após compilar, desfaça a conexão entre o GPIO 0 e o GND. 
+### 1. Primeiramente, resete todas as placas
+> #### Observação: Caso estiver usando o Arduino UNO para compilar, o resete também
+### 2. Compile 
+### 3. Após compilar, desfaça a conexão entre o GPIO 0 e o GND. 
 > #### Explicação: O curto-circuito entre o GPIO 0 e o GND faz com que a ESP32-Cam entre em seu modo programável. Desfazendo a conexão, ela volta para o modo funcional. 
-### 3. Resete a placa. 
+### 4. Resete a placa. 
 > #### Explicação: Resetando você faz com que a ESP funcione de acordo com o último código compilado.
