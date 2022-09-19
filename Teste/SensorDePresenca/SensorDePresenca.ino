@@ -12,7 +12,7 @@ void IRAM_ATTR sensorDePresenca(){
 
 void setup(){
     Serial.begin(115200);
-
+    pinMode(PINO_SENSOR_PRESENCA, INPUT);
     attachInterrupt(PINO_SENSOR_PRESENCA, sensorDePresenca, RISING);
 }
 
