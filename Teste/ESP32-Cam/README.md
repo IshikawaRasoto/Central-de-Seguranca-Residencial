@@ -12,7 +12,7 @@
 # Configurações no Arduino IDE
 
 ## Vá até Ferramentas nas configurações da IDE
-#### •Placa: "ESP32 Wrover Module"
+#### •Board: "ESP32 Wrover Module"
 #### •Upload Speed: "115200"
 #### •Flash Frequency: "40MHz"
 #### •Flash Mode: "QIO"
