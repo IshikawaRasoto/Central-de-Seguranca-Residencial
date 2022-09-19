@@ -18,18 +18,17 @@
 #### •Flash Mode: "QIO"
 #### •Partition Scheme: "Huge APP (3MB No OTA/1MB SPIFFS")
 
-## Não se esqueça de
-#### !Certificar que a porta configurada é a conectada
-#### !Certificar que todas as bibliotecas estão instaladas
-#### !Configurar a rede wi-fi 
-#### !Configurar o BOTtoken
-#### !Configurar o CHAT_ID
+> #### Se certifique que a porta configurada é a conectada
+> #### Se certificque que todas as bibliotecas estão instaladas
+> #### Configure a rede wi-fi 
+> #### Configure o BOTtoken
+> #### Configure o CHAT_ID
 
 
 # Instruções para compilação correta na ESP32-Cam
 
 ### 1. Compile 
 ### 2. Após compilar, desfaça a conexão entre o GPIO 0 e o GND. 
-#### Explicação: O curto-circuito entre o GPIO 0 e o GND faz com que a ESP32-Cam entre em seu modo programável. Desfazendo a conexão, ela volta para o modo funcional. 
+> #### Explicação: O curto-circuito entre o GPIO 0 e o GND faz com que a ESP32-Cam entre em seu modo programável. Desfazendo a conexão, ela volta para o modo funcional. 
 ### 3. Resete a placa. 
-#### Explicação: Resetando você faz com que a ESP funcione de acordo com o último código compilado.
+> #### Explicação: Resetando você faz com que a ESP funcione de acordo com o último código compilado.
