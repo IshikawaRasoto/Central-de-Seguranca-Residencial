@@ -1,5 +1,5 @@
 /*
-    ESPCentral.hpp - Código pertencente ao projeto da matéria de Oficinas de Integração 1
+    ESPCAM.hpp - Código pertencente ao projeto da matéria de Oficinas de Integração 1
     Projeto - Central de Segurança Residencial
     Equipe 20 - Rafael Eijy Ishikawa Rasoto, Gabriel Spadafora e Nicolas Riuichi Oda.
 */
@@ -19,3 +19,5 @@ void testeDisp();
 void verificaDadosWiFi();
 void verificaConexao();
 void testeESPComunicacao();
+
+void setModoAP(volatile bool ap);

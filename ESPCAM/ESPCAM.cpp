@@ -1,14 +1,15 @@
 /*
-    ESPCentral.cpp - Código pertencente ao projeto da matéria de Oficinas de Integração 1
+    ESPCAM.cpp - Código pertencente ao projeto da matéria de Oficinas de Integração 1
     Projeto - Central de Segurança Residencial
     Equipe 20 - Rafael Eijy Ishikawa Rasoto, Gabriel Spadafora e Nicolas Riuichi Oda.
 */
 
 volatile bool modoAP;
+volatile bool statusComunicacao;
 
 volatile char statusWiFi;
 
-HardwareSerial EspCam (1);
+HardwareSerial EspCentral (1);
 
 #include "ESPCentral.hpp"
 
@@ -21,6 +22,7 @@ void executar(){
     operacoes();
     verificaConexao();
     verificaModoAP();
+    testeESPComunicacao();
 }
 
 void operacoes(){
@@ -29,11 +31,12 @@ void operacoes(){
 
 void serialConfig(){
     Serial.begin(115200);
-    EspCam.begin(115200, SERIAL_8N1, RX_CAM, TX_CAM);
+    EspCentral.begin(115200, SERIAL_8N1, RX_CENTRAL, TX_CENTRAL);
 }
 
 void inicializarVariaveis(){
     modoAP = false;
+    statusComunicacao = false;
 }
 
 void verificaConexao(){
@@ -50,14 +53,21 @@ void verificaModoAP(){
 }
 
 void testeESPComunicacao(){
-    EspCam.print("TesteComunicacao");
-    delay(100);
-    if(EspCam.available()){
-        String mensagem = EspCam.readString();
-        if(mensagem == "TesteComunicacao"){
-            statusComunicacao = true;
-            return;
+    if(ESPCentral.available()){
+        String mensagem = ESPCentral.readString();
+        
+        if(modoAP){
+                
         }
-        statusComunicacao = false;
+        
+        switch(mensagem){
+            case "TesteComunicacao":
+                ESPCentral.print(mensagem);
+                break;
+            case "modoAP":
+                limparMemoria();
+                modoAP = true;
+                break;
+        }
     }
 }

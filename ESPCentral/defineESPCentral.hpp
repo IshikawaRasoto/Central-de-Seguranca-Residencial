@@ -19,3 +19,6 @@
 #define NET_OK 2
 #define SEM_NET 1
 #define SEM_WIFI 0
+
+#define RX_CAM
+#define TX_CAM
