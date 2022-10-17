@@ -21,7 +21,7 @@ Funções Principais
 
 void setup(){
     configuracao();
-    attachInterrupt()
+    //attachInterrupt()
 }
 
 void loop(){

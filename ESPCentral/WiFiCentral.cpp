@@ -3,7 +3,7 @@
     Projeto - Central de Segurança Residencial
     Equipe 20 - Rafael Eijy Ishikawa Rasoto, Gabriel Spadafora e Nicolas Riuichi Oda.
 */
-
+/*
 #include "WiFiCentral.hpp"
 #include "defineESPCentral.hpp"
 #include "HTML.h"
@@ -20,8 +20,8 @@ void conectaWiFi(){
     String ssid = EEPROM.readString(EEPROM_SSID);
     String senha = EEPROM.readString(EEPROM_SENHA);
 
-    char char_ssid[TAMANHO_STRING]
-    char char_senha[TAMANHO_STRING]
+    char char_ssid[TAMANHO_STRING];
+    char char_senha[TAMANHO_STRING];
 
     ssid.toCharArray(char_ssid, TAMANHO_STRING);
     senha.toCharArray(char_senha, TAMANHO_STRING);
@@ -41,7 +41,7 @@ void testeConexao(volatile char* statusWiFi){
         (*statusWiFi) = SEM_NET;
         return;
     }
-    (*statusWiFi) = SEM_WIFI
+    (*statusWiFi) = SEM_WIFI;
     conectaWiFi();
 }
 
@@ -108,5 +108,5 @@ void handleSubmit(){
         delay(3000);
         ESP.restart();
     }else
-        server.send(200, "text/html", erro_resposta);   
-}
+        server.send(200, "text/html", erro_resposta); 
+}*/

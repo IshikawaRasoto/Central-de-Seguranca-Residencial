@@ -8,8 +8,7 @@ volatile bool modoAP;
 
 volatile char statusWiFi;
 
-HardwareSerial EspCam (1);
-
+#include "defineESPCentral.hpp"
 #include "ESPCentral.hpp"
 
 void configuracao(){
@@ -19,8 +18,8 @@ void configuracao(){
 void executar(){
     testeESPComunicacao();
     operacoes();
-    verificaConexao();
-    verificaModoAP();
+    //verificaConexao();
+    //verificaModoAP();
 }
 
 void operacoes(){
@@ -29,7 +28,7 @@ void operacoes(){
 
 void serialConfig(){
     Serial.begin(115200);
-    EspCam.begin(115200, SERIAL_8N1, RX_CAM, TX_CAM);
+    Serial1.begin(115200, SERIAL_8N1, RX_CAM, TX_CAM);
 }
 
 void inicializarVariaveis(){
@@ -37,27 +36,29 @@ void inicializarVariaveis(){
 }
 
 void verificaConexao(){
-    testeConexao(&statusWiFi);
+    //testeConexao(&statusWiFi);
 }
 
 void verificaModoAP(){
     if(modoAP)
-        limparMemoria();
-    if(testeCredenciais())
-        return;
+        //limparMemoria();
+    /*if(testeCredenciais())
+        return;*/
     modoAP = true;
-    while(enviaFormulario());
+    //while(enviaFormulario());
 }
 
 void testeESPComunicacao(){
-    EspCam.print("TesteComunicacao");
-    delay(100);
-    if(EspCam.available()){
-        String mensagem = EspCam.readString();
+    Serial1.print("TesteComunicacao");
+    delay(250);
+    if(Serial1.available()){
+        String mensagem = Serial1.readString();
         if(mensagem == "TesteComunicacao"){
-            statusComunicacao = true;
+            //statusComunicacao = true;
+            Serial.println("Comunicação Serial OK");
             return;
         }
-        statusComunicacao = false;
+        //statusComunicacao = false;
+        Serial.println("Comunicação Serial NOK");
     }
 }

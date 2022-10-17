@@ -38,10 +38,10 @@ bool testeCredenciais(){
 }
 
 bool escreverNaMemoria(String ssid, String senha, String token, String chatID){
-    char buffer1 [TAMANHO_STRING]
-    char buffer2 [TAMANHO_STRING]
-    char buffer3 [TAMANHO_STRING_TOKEN]
-    char buffer4 [TAMANHO_STRING]
+    char buffer1 [TAMANHO_STRING];
+    char buffer2 [TAMANHO_STRING];
+    char buffer3 [TAMANHO_STRING_TOKEN];
+    char buffer4 [TAMANHO_STRING];
 
     ssid.toCharArray(buffer1, TAMANHO_STRING);
     senha.toCharArray(buffer2, TAMANHO_STRING);

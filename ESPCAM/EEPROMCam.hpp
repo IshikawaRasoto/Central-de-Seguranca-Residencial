@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <Arduino.h>
 #include "defineESPCam.hpp"
 
 void inicializaEEPROM();

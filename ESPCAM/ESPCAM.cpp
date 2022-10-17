@@ -9,29 +9,28 @@ volatile bool statusComunicacao;
 
 volatile char statusWiFi;
 
-HardwareSerial EspCentral (1);
-
-#include "ESPCentral.hpp"
+#include "defineESPCAM.hpp"
+#include "ESPCam.hpp"
+#include "EEPROMCam.hpp"
 
 void configuracao(){
     serialConfig();
 }
 
 void executar(){
-    verificaDadosWiFi();
+    //verificaDadosWiFi();
     operacoes();
-    verificaConexao();
-    verificaModoAP();
+    //verificaConexao();
+    //verificaModoAP();
     testeESPComunicacao();
 }
 
 void operacoes(){
-    
 }
 
 void serialConfig(){
     Serial.begin(115200);
-    EspCentral.begin(115200, SERIAL_8N1, RX_CENTRAL, TX_CENTRAL);
+    Serial1.begin(115200, SERIAL_8N1, RX_CENTRAL, TX_CENTRAL);
 }
 
 void inicializarVariaveis(){
@@ -40,34 +39,27 @@ void inicializarVariaveis(){
 }
 
 void verificaConexao(){
-    testeConexao(&statusWiFi);
+    //testeConexao(&statusWiFi);
 }
 
 void verificaModoAP(){
     if(modoAP)
-        limparMemoria();
+        //limparMemoria();
     if(testeCredenciais())
         return;
     modoAP = true;
-    while(enviaFormulario());
+    //while(enviaFormulario());
 }
 
 void testeESPComunicacao(){
-    if(ESPCentral.available()){
-        String mensagem = ESPCentral.readString();
-        
-        if(modoAP){
-                
+  
+    if(Serial1.available()){
+        String mensagem = Serial1.readString();
+        if(mensagem == "TesteComunicacao"){
+            Serial1.print(mensagem);
         }
-        
-        switch(mensagem){
-            case "TesteComunicacao":
-                ESPCentral.print(mensagem);
-                break;
-            case "modoAP":
-                limparMemoria();
-                modoAP = true;
-                break;
+        else if("modoAP"){
+            modoAP = true;
         }
     }
 }

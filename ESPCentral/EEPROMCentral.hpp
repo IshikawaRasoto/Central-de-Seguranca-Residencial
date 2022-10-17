@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <Arduino.h>
+
 #include "defineESPCentral.hpp"
 
 void inicializaEEPROM();

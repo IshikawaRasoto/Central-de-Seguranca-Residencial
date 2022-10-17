@@ -20,5 +20,18 @@
 #define SEM_NET 1
 #define SEM_WIFI 0
 
-#define RX_CAM
-#define TX_CAM
+#define RX_CAM 16
+#define TX_CAM 17
+
+/*
+#define SCK 18
+#define MISO 19
+#define MOSI 23
+#define SDA_SIDA 21
+#define CE_DISPLAY 15
+#define RST_DISPLAY 2
+#define DCMD_DISPLAY 4
+#define CS 5
+#define RESET 22
+#define DHT11_DATA 35
+*/
