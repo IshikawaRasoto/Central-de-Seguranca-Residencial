@@ -17,7 +17,7 @@ void configuracao(){
 }
 
 void executar(){
-    verificaDadosWiFi();
+    testeESPComunicacao();
     operacoes();
     verificaConexao();
     verificaModoAP();
