@@ -53,7 +53,7 @@ void verificaModoAP(){
 
 void testeESPComunicacao(){
   
-    if(Serial1.available()){
+    while(Serial1.available()){
         String mensagem = Serial1.readString();
         if(mensagem == "TesteComunicacao"){
             Serial1.print(mensagem);

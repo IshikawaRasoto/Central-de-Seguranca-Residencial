@@ -12,7 +12,7 @@ Rotinas de Interrupção
 *************************************************************/
 
 void IRAM_ATTR botaoAcessoAP(){
-    
+    setModoAP(true);
 }
 
 /*************************************************************
@@ -21,7 +21,7 @@ Funções Principais
 
 void setup(){
     configuracao();
-    //attachInterrupt()
+    attachInterrupt(BOTAO_AP, botaoAcessoAP, RISING);
 }
 
 void loop(){

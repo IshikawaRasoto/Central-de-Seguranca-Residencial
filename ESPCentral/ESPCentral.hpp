@@ -19,3 +19,7 @@ void testeDisp();
 void verificaDadosWiFi();
 void verificaConexao();
 void testeESPComunicacao();
+void verificaModoAP();
+void atualizarDHT();
+
+void setModoAP(volatile bool ap);

@@ -3,9 +3,10 @@
     Projeto - Central de Segurança Residencial
     Equipe 20 - Rafael Eijy Ishikawa Rasoto, Gabriel Spadafora e Nicolas Riuichi Oda.
 */
-/*
+
 #include "WiFiCentral.hpp"
 #include "defineESPCentral.hpp"
+#include "EEPROMCentral.hpp"
 #include "HTML.h"
 
 #include <WiFi.h>
@@ -109,4 +110,4 @@ void handleSubmit(){
         ESP.restart();
     }else
         server.send(200, "text/html", erro_resposta); 
-}*/
+}

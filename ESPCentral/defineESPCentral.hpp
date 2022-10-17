@@ -6,7 +6,7 @@
 
 #pragma once
 
-#define BR 9600;
+#define BR 9600
 
 #define EEPROM_SSID 0
 #define EEPROM_SENHA 50
@@ -23,8 +23,9 @@
 #define RX_CAM 16
 #define TX_CAM 17
 
-/*
-#define SCK 18
+#define BOTAO_AP 34
+
+/*#define SCK 18
 #define MISO 19
 #define MOSI 23
 #define SDA_SIDA 21
@@ -32,6 +33,5 @@
 #define RST_DISPLAY 2
 #define DCMD_DISPLAY 4
 #define CS 5
-#define RESET 22
+#define RESET 22*/
 #define DHT11_DATA 35
-*/

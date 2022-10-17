@@ -8,8 +8,16 @@ volatile bool modoAP;
 
 volatile char statusWiFi;
 
+bool statusComunicacao;
+
+float temperatura;
+float umidade;
+
 #include "defineESPCentral.hpp"
 #include "ESPCentral.hpp"
+#include "EEPROMCentral.hpp"
+#include "WiFiCentral.hpp"
+#include "DHTCentral.hpp"
 
 void configuracao(){
     serialConfig();
@@ -18,12 +26,12 @@ void configuracao(){
 void executar(){
     testeESPComunicacao();
     operacoes();
-    //verificaConexao();
-    //verificaModoAP();
+    verificaConexao();
+    verificaModoAP();
 }
 
 void operacoes(){
-    
+    atualizarDHT();
 }
 
 void serialConfig(){
@@ -36,29 +44,35 @@ void inicializarVariaveis(){
 }
 
 void verificaConexao(){
-    //testeConexao(&statusWiFi);
+    testeConexao(&statusWiFi);
 }
 
 void verificaModoAP(){
-    if(modoAP)
-        //limparMemoria();
-    /*if(testeCredenciais())
-        return;*/
+    if(modoAP){
+        limparMemoria();
+        Serial1.print("ModoAP");
+    }
+    if(testeCredenciais())
+        return;
     modoAP = true;
-    //while(enviaFormulario());
+    while(enviaFormulario());
 }
 
 void testeESPComunicacao(){
     Serial1.print("TesteComunicacao");
     delay(250);
-    if(Serial1.available()){
+    while(Serial1.available()){
         String mensagem = Serial1.readString();
         if(mensagem == "TesteComunicacao"){
-            //statusComunicacao = true;
+            statusComunicacao = true;
             Serial.println("Comunicação Serial OK");
             return;
         }
-        //statusComunicacao = false;
+        statusComunicacao = false;
         Serial.println("Comunicação Serial NOK");
     }
+}
+
+void setModoAP(volatile bool ap){
+   modoAP = ap;
 }
