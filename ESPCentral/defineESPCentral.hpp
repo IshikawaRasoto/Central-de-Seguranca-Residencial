@@ -8,17 +8,17 @@
 
 #define BR 9600
 
-#define EEPROM_SSID 0
-#define EEPROM_SENHA 50
-#define EEPROM_CHATID 100
-#define EEPROM_TOKEN 150
+#define EEPROM_SSID     0
+#define EEPROM_SENHA    50
+#define EEPROM_CHATID   100
+#define EEPROM_TOKEN    150
 
-#define TAMANHO_STRING 31
-#define TAMANHO_STRING_TOKEN 51
+#define TAMANHO_STRING          31
+#define TAMANHO_STRING_TOKEN    51
 
-#define NET_OK 2
-#define SEM_NET 1
-#define SEM_WIFI 0
+#define NET_OK      2
+#define SEM_NET     1
+#define SEM_WIFI    0
 
 #define RX_CAM 16
 #define TX_CAM 17

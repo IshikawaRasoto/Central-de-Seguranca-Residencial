@@ -4,12 +4,21 @@
     Equipe 20 - Rafael Eijy Ishikawa Rasoto, Gabriel Spadafora e Nicolas Riuichi Oda.
 */
 
+//Variáveis de Wi-Fi
+String ssid;
+String senha;
+String chatID;
+String token;
+
+
+//Variáveis do Sistema
 volatile bool modoAP;
-
+bool alarme;
+bool disparaAlarme;
 volatile char statusWiFi;
-
 bool statusComunicacao;
 
+//Variáveis DHT11
 float temperatura;
 float umidade;
 
@@ -19,19 +28,22 @@ float umidade;
 #include "WiFiCentral.hpp"
 #include "DHTCentral.hpp"
 
+// Configuração
+
 void configuracao(){
     serialConfig();
-}
+    inicializaEEPROM();
+    carregarDados(&ssid, &senha, &token, &chatID);
+    inicializarVariaveis();
+    configPinos();
+    configModulos();
 
-void executar(){
-    testeESPComunicacao();
-    operacoes();
-    verificaConexao();
-    verificaModoAP();
-}
+    while(statusWiFi == SEM_WIFI){
+        conectaWiFi();
+        testeConexao(&statusWiFi);
+    }
 
-void operacoes(){
-    atualizarDHT();
+    conectaTelegram();
 }
 
 void serialConfig(){
@@ -40,7 +52,37 @@ void serialConfig(){
 }
 
 void inicializarVariaveis(){
-    modoAP = false;
+    modoAP              = false;
+    statusComunicacao   = true;
+    alarme              = false;
+    disparaAlarme       = false;
+    statusWiFi          = SEM_WIFI;
+}
+
+void configPinos(){
+    pinMode(BOTAO_AP, INPUT);
+}
+
+void configModulos(){
+
+}
+
+// Execução
+void executar(){
+    verificacoes();
+    testeESPComunicacao();
+    operacoes();
+}
+
+void operacoes(){
+    atualizarDHT();
+}
+
+void verificacoes(){
+    verificaModoAP();
+    verificaConexao();
+    verificaComunicacao();
+    verificaAlarme();
 }
 
 void verificaConexao(){
@@ -58,7 +100,7 @@ void verificaModoAP(){
     while(enviaFormulario());
 }
 
-void testeESPComunicacao(){
+void verificaComunicacao(){
     Serial1.print("TesteComunicacao");
     delay(250);
     while(Serial1.available()){
@@ -72,7 +114,11 @@ void testeESPComunicacao(){
         Serial.println("Comunicação Serial NOK");
     }
 }
-
-void setModoAP(volatile bool ap){
-   modoAP = ap;
+void verificaAlarme(){
+    if(!alarme)
+        return;
+    if(!statusComunicacao)
+        disparaAlarme = true;
 }
+
+void setModoAP(volatile bool ap){modoAP = ap;}

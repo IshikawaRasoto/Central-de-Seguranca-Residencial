@@ -10,6 +10,9 @@
 
 void conectaWiFi();
 void testeConexao(volatile char* statusWiFi);
+
+void conectaTelegram();
+
 bool enviaFormulario();
 
 void handleRoot();

@@ -46,6 +46,14 @@ void testeConexao(volatile char* statusWiFi){
     conectaWiFi();
 }
 
+void conectaTelegram(){
+    String resposta;
+
+    while(resposta != "Ok");
+}
+
+
+
 bool enviaFormulario(){
     const char* ssid_AP = "Central_De_Seguranca";
     const char* senha_AP = "CentralSEG!2022";
@@ -60,10 +68,10 @@ bool enviaFormulario(){
 
     Serial.println("Servidor HTTP iniciado");
 
-    String ssidAux = EEPROM.readString(EEPROM_SSID);
-    String senhaAux = EEPROM.readString(EEPROM_SENHA);
-    String tokenAux = EEPROM.readString(EEPROM_TOKEN);
-    String chatIDAux = EEPROM.readString(EEPROM_CHATID);
+    String ssidAux      = EEPROM.readString(EEPROM_SSID);
+    String senhaAux     = EEPROM.readString(EEPROM_SENHA);
+    String tokenAux     = EEPROM.readString(EEPROM_TOKEN);
+    String chatIDAux    = EEPROM.readString(EEPROM_CHATID);
 
     while(ssidAux.length() <= 0 || senhaAux.length() <= 0 || tokenAux.length() <= 0 || chatIDAux.length() <= 0){
         server.handleClient();
@@ -83,6 +91,7 @@ void handleRoot(){
 // Falha no envido do formulário
 void handleNotFound(){
     String message = "Arquivo não encontrado \n\n";
+
     message += "URI: ";
     message += server.uri();
     message += "\nMétodo:";
@@ -90,6 +99,7 @@ void handleNotFound(){
     message += "\nArguments:";
     message += server.args();
     message += "\n";
+
     for (uint8_t i = 0; i < server.args(); i++){
         message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
     }

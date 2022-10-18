@@ -20,16 +20,16 @@ void limparMemoria(){
 }
 
 void carregarDados(String* ssid, String* senha, String* token, String* chatID){
-    (*ssid) = EEPROM.readString(EEPROM_SSID);
-    (*senha) = EEPROM.readString(EEPROM_SENHA);
-    (*token) = EEPROM.readString(EEPROM_TOKEN);
-    (*chatID) = EEPROM.readString(EEPROM_CHATID);
+    (*ssid)     = EEPROM.readString(EEPROM_SSID);
+    (*senha)    = EEPROM.readString(EEPROM_SENHA);
+    (*token)    = EEPROM.readString(EEPROM_TOKEN);
+    (*chatID)   = EEPROM.readString(EEPROM_CHATID);
 }
 
 bool testeCredenciais(){
-    String ssid_teste = EEPROM.readString(EEPROM_SSID);
-    String senha_teste = EEPROM.readString(EEPROM_SENHA);
-    String token_teste = EEPROM.readString(EEPROM_TOKEN);
+    String ssid_teste   = EEPROM.readString(EEPROM_SSID);
+    String senha_teste  = EEPROM.readString(EEPROM_SENHA);
+    String token_teste  = EEPROM.readString(EEPROM_TOKEN);
     String chatID_teste = EEPROM.readString(EEPROM_CHATID);
 
     if(ssid_teste.length() > 0 && senha_teste.length() > 0 && token_teste.length() > 0 && chatID_teste.length() > 0)
@@ -55,10 +55,10 @@ bool escreverNaMemoria(String ssid, String senha, String token, String chatID){
 
     EEPROM.commit();
 
-    String ssid_ver = EEPROM.readString(EEPROM_SSID);
-    String senha_ver = EEPROM.readString(EEPROM_SENHA);
-    String token_ver = EEPROM.readString(EEPROM_TOKEN);
-    String chatID_ver = EEPROM.readString(EEPROM_CHATID);
+    String ssid_ver     = EEPROM.readString(EEPROM_SSID);
+    String senha_ver    = EEPROM.readString(EEPROM_SENHA);
+    String token_ver    = EEPROM.readString(EEPROM_TOKEN);
+    String chatID_ver   = EEPROM.readString(EEPROM_CHATID);
 
     if(ssid == ssid_ver && senha == senha_ver && token == token_ver && chatID == chatID_ver)
         return true;

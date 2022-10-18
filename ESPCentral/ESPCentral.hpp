@@ -11,6 +11,7 @@
 void configuracao();
 void executar();
 
+void verificacoes();
 void operacoes();
 void serialConfig();
 void pingConfig();
@@ -20,6 +21,8 @@ void verificaDadosWiFi();
 void verificaConexao();
 void testeESPComunicacao();
 void verificaModoAP();
-void atualizarDHT();
+void verificaAlarme()
+void configPinos();
+void configModulos();
 
 void setModoAP(volatile bool ap);
