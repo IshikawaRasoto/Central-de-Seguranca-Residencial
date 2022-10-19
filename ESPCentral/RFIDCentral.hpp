@@ -12,6 +12,13 @@
 
 void configuraRFID();
 void verificaRFID();
-void salvaTAG();
-void verificaTAG();
 void verificaTXT();
+void verificaTAG();
+void salvaTAG();
+void cadastraTAG();
+void cadastraTAG_SD();
+void jaCadastrado();
+void ativaRFID();
+void ativaSD();
+void acessoLiberado();
+void acessoNegado();
