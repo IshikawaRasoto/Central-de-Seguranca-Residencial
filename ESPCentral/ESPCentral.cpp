@@ -4,6 +4,14 @@
     Equipe 20 - Rafael Eijy Ishikawa Rasoto, Gabriel Spadafora e Nicolas Riuichi Oda.
 */
 
+#include "defineESPCentral.hpp"
+#include "ESPCentral.hpp"
+#include "EEPROMCentral.hpp"
+#include "WiFiCentral.hpp"
+#include "DHTCentral.hpp"
+#include "RFIDCentral.hpp"
+
+
 //Variáveis de Wi-Fi
 String ssid;
 String senha;
@@ -21,12 +29,6 @@ bool statusComunicacao;
 //Variáveis DHT11
 float temperatura;
 float umidade;
-
-#include "defineESPCentral.hpp"
-#include "ESPCentral.hpp"
-#include "EEPROMCentral.hpp"
-#include "WiFiCentral.hpp"
-#include "DHTCentral.hpp"
 
 // Configuração
 
@@ -64,7 +66,9 @@ void configPinos(){
 }
 
 void configModulos(){
-
+    SPI.begin();
+    configuraRFID();
+    verificaTXT();
 }
 
 // Execução
@@ -76,6 +80,7 @@ void executar(){
 
 void operacoes(){
     atualizarDHT();
+    verificaRFID();
 }
 
 void verificacoes(){
@@ -118,6 +123,11 @@ void verificaAlarme(){
     if(!alarme)
         return;
     if(!statusComunicacao)
+        disparaAlarme = true;
+}
+
+void movimentoDetectado(){
+    if(alarme)
         disparaAlarme = true;
 }
 

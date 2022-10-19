@@ -15,6 +15,10 @@ void IRAM_ATTR botaoAcessoAP(){
     setModoAP(true);
 }
 
+void IRAM_ATTR sensorMovimento(){
+    movimentoDetectado();
+}
+
 /*************************************************************
 Funções Principais
 *************************************************************/
@@ -22,6 +26,7 @@ Funções Principais
 void setup(){
     configuracao();
     attachInterrupt(BOTAO_AP, botaoAcessoAP, RISING);
+    attachInterrupt(PINO_MOVIMETO, sensorMovimento, RISING);
 }
 
 void loop(){

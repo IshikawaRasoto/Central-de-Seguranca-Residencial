@@ -25,4 +25,6 @@ void verificaAlarme()
 void configPinos();
 void configModulos();
 
+void movimentoDetectado();
+
 void setModoAP(volatile bool ap);
