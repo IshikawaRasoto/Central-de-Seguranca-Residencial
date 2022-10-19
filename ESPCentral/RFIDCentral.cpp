@@ -38,13 +38,17 @@ void verificaRFID(){
     mfrc522[1].PICC_HaltA();
 
     if (mfrc522[0].PICC_IsNewCardPresent() && mfrc522[0].PICC_ReadCardSerial()) { //ENTRADA
+          Serial.println("cartao 0 encontrado");
           salvaTAG(0);
+          Serial.println("IDtag");
           verificaTAG("simples");
           IDtag = "";
     } 
 
     if (mfrc522[1].PICC_IsNewCardPresent() && mfrc522[1].PICC_ReadCardSerial()) { //SAIDA
+          Serial.println("cartao 1 encontrado");
           salvaTAG(1);
+          Serial.println("IDtag");
           verificaTAG("simples");
           IDtag = "";
     } 
@@ -64,6 +68,7 @@ void verificaTXT(){
 
     else{
         if(!dados){
+            Serial.println("Dados.txt está sendo criado");
             dados = SD.open ("/IDtag.txt", FILE_WRITE);
             dados.close();
         }
@@ -179,5 +184,9 @@ void ativaSD(){
     delay(100);
 }
 
-void acessoLiberado(){}
-void acessoNegado(){}
+void acessoLiberado(){
+    Serial.println("Cartão encontrado");
+}
+void acessoNegado(){
+    Serial.println("Cartão não encontrado encontrado");
+}
