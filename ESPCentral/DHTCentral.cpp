@@ -9,7 +9,7 @@
 #include <DHT.h>
 #include "defineESPCentral.hpp"
 
-DHT dht(DHT11_DATA, DHTTYPE)
+DHT dht(DHT11_DATA, DHTTYPE);
 
 void atualizarDHT(float* umidade, float* temperatura){
     Serial.println("Atualizar DHT");
@@ -17,11 +17,14 @@ void atualizarDHT(float* umidade, float* temperatura){
     (*umidade) = dht.readHumidity();
     (*temperatura) = dht.readTemperature();
 
-    if(isnan(umidade) || isnan(temperatura)){
+    if(isnan(*umidade) || isnan(*temperatura)){
         Serial.println("Falha na leitura do Sensor DHT");
         return;
     }
 
-    Serial.println("Temperatura: " + temperatura);
-    Serial.println("Umidade %: " + umidade);
+    float t = *temperatura;
+    float u = *umidade;
+
+    Serial.print("Temperatura: " + String(t));
+    Serial.println("Umidade %: " + String(u));
 }

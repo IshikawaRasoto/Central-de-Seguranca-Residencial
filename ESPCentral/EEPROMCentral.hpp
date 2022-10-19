@@ -12,6 +12,6 @@
 
 void inicializaEEPROM();
 void limparMemoria();
-void carregarDados();
+void carregarDados(String* ssid, String* senha, String* token, String* chatID);
 bool testeCredenciais();
 bool escreverNaMemoria (String ssid, String senha, String token, String chatID);

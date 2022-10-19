@@ -10,11 +10,11 @@
 #include <SPI.h>
 #include <mySD.h>
 
-void configuraRFID();
+void configuraRFID_SD();
 void verificaRFID();
 void verificaTXT();
-void verificaTAG();
-void salvaTAG();
+void verificaTAG(String tipo);
+void salvaTAG(const int x);
 void cadastraTAG();
 void cadastraTAG_SD();
 void jaCadastrado();

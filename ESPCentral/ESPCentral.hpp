@@ -19,9 +19,9 @@ void inicializarVariaveis();
 void testeDisp();
 void verificaDadosWiFi();
 void verificaConexao();
-void testeESPComunicacao();
+void verificaComunicacao();
 void verificaModoAP();
-void verificaAlarme()
+void verificaAlarme();
 void configPinos();
 void configModulos();
 

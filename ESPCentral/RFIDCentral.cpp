@@ -25,8 +25,8 @@ void configuraRFID_SD(){
     pinMode(SDA_SAIDA, OUTPUT);
     pinMode(RESET, OUTPUT);
 
-    for (uint8_t reader = 0; reader < NR_OF_READERS; reader++) {
-    mfrc522[reader].PCD_Init(ssPins[reader], RESET); 
+    for (uint8_t reader = 0; reader < 2; reader++) {
+    mfrc522[reader].PCD_Init(sdaPins[reader], RESET); 
     }
 
     ativaRFID();
@@ -34,7 +34,8 @@ void configuraRFID_SD(){
 
 void verificaRFID(){
 
-    mfrc522.PICC_HaltA();
+    mfrc522[0].PICC_HaltA();
+    mfrc522[1].PICC_HaltA();
 
     if (mfrc522[0].PICC_IsNewCardPresent() && mfrc522[0].PICC_ReadCardSerial()) { //ENTRADA
           salvaTAG(0);
@@ -47,7 +48,7 @@ void verificaRFID(){
           verificaTAG("simples");
           IDtag = "";
     } 
-    delay(200)
+    delay(200);
 }
 
 void verificaTXT(){
@@ -138,14 +139,14 @@ void verificaTAG(String tipo){
 
 void salvaTAG (const int x){
     for (byte i = 0; i < mfrc522[x].uid.size; i++) {        
-        IDtag.concat(String(mfrc522.uid.uidByte[i], HEX));
+        IDtag.concat(String(mfrc522[x].uid.uidByte[i], HEX));
     } 
 }
 
 void cadastraTAG(){
 
     while (!mfrc522[1].PICC_IsNewCardPresent() || !mfrc522[1].PICC_ReadCardSerial()){ //APENAS PODE CADASTRAR UMA TAG DENTRO DE CASA
-        delay(200)
+        delay(200);
         //COMPLETAR COM FUNCOES
     }
     salvaTAG(1);
@@ -177,3 +178,6 @@ void ativaSD(){
     digitalWrite(CS, LOW);
     delay(100);
 }
+
+void acessoLiberado(){}
+void acessoNegado(){}

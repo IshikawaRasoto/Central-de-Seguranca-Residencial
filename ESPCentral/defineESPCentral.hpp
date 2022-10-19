@@ -26,9 +26,9 @@
 #define BOTAO_AP 34
 #define PINO_MOVIMETO 14
 
-#define SCK 18
-#define MISO 19
-#define MOSI 23
+#define SCK_PINO 18
+#define MISO_PINO 19
+#define MOSI_PINO 23
 #define SDA_SAIDA 21
 #define SDA_ENTRADA 13
 //#define CE_DISPLAY 15

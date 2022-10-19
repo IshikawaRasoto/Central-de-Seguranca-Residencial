@@ -67,19 +67,18 @@ void configPinos(){
 
 void configModulos(){
     SPI.begin();
-    configuraRFID();
+    configuraRFID_SD();
     verificaTXT();
 }
 
 // Execução
 void executar(){
     verificacoes();
-    testeESPComunicacao();
     operacoes();
 }
 
 void operacoes(){
-    atualizarDHT();
+    atualizarDHT(&umidade, &temperatura);
     verificaRFID();
 }
 
