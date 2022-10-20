@@ -40,12 +40,12 @@ void configuracao(){
     configPinos();
     configModulos();
 
-    while(statusWiFi == SEM_WIFI){
+    /*while(statusWiFi == SEM_WIFI){
         conectaWiFi();
         testeConexao(&statusWiFi);
-    }
+    }*/
 
-    conectaTelegram();
+    //conectaTelegram();
 }
 
 void serialConfig(){
@@ -94,14 +94,14 @@ void verificaConexao(){
 }
 
 void verificaModoAP(){
-    if(modoAP){
+    /*if(modoAP){
         limparMemoria();
         Serial1.print("ModoAP");
     }
     if(testeCredenciais())
         return;
     modoAP = true;
-    while(enviaFormulario());
+    while(enviaFormulario());*/
 }
 
 void verificaComunicacao(){

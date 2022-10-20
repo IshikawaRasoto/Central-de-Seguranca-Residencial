@@ -35,12 +35,15 @@ void configuraRFID_SD(){
 void verificaRFID(){
 
     mfrc522[0].PICC_HaltA();
+    delay(100);
     mfrc522[1].PICC_HaltA();
+
+    delay(100);
 
     if (mfrc522[0].PICC_IsNewCardPresent() && mfrc522[0].PICC_ReadCardSerial()) { //ENTRADA
           Serial.println("cartao 0 encontrado");
           salvaTAG(0);
-          Serial.println("IDtag");
+          Serial.println(IDtag);
           verificaTAG("simples");
           IDtag = "";
     } 
@@ -48,7 +51,7 @@ void verificaRFID(){
     if (mfrc522[1].PICC_IsNewCardPresent() && mfrc522[1].PICC_ReadCardSerial()) { //SAIDA
           Serial.println("cartao 1 encontrado");
           salvaTAG(1);
-          Serial.println("IDtag");
+          Serial.println(IDtag);
           verificaTAG("simples");
           IDtag = "";
     } 
@@ -58,7 +61,6 @@ void verificaRFID(){
 void verificaTXT(){
 
     ativaSD();
-
     if (!SD.begin(CS)){
         while (!SD.begin(CS)){
             Serial.println ("Erro ao inicializar cartão SD"); //ALTERAR
@@ -67,9 +69,9 @@ void verificaTXT(){
     }
 
     else{
-        if(!dados){
+        if(!SD.exists("/Dados.txt")){
             Serial.println("Dados.txt está sendo criado");
-            dados = SD.open ("/IDtag.txt", FILE_WRITE);
+            dados = SD.open ("/Dados.txt", FILE_WRITE);
             dados.close();
         }
     }
@@ -85,7 +87,7 @@ void verificaTAG(String tipo){
     ativaSD();
 
     String IDtagTemp = "";
-    dados = SD.open("/IDtag.txt");
+    dados = SD.open("/Dados.txt");
 
 
     if (tipo == "simples"){
