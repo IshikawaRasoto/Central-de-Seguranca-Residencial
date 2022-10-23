@@ -8,7 +8,8 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-#include <mySD.h>
+//#include<mySD.h>
+#include <SD.h>
 
 void configuraRFID_SD();
 void verificaRFID();
@@ -18,7 +19,5 @@ void salvaTAG(const int x);
 void cadastraTAG();
 void cadastraTAG_SD();
 void jaCadastrado();
-void ativaRFID();
-void ativaSD();
 void acessoLiberado();
 void acessoNegado();

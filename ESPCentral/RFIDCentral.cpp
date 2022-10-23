@@ -8,11 +8,19 @@
 #include "RFIDCentral.hpp"
 #include <MFRC522.h>
 
-using namespace ext;
+
+#define SD_CLK_PIN       25
+#define SD_MOSI_PIN      26
+#define SD_MISO_PIN      32
+#define SD_CS_PIN        33
+
+//using namespace ext;
 
 byte sdaPins[] = {SDA_ENTRADA, SDA_SAIDA};
 
 MFRC522 mfrc522[2];
+
+SPIClass SPI2 (HSPI);
 
 File dados;
 
@@ -20,49 +28,61 @@ String IDtag = "";
 
 void configuraRFID_SD(){
 
+    pinMode(SD_CS_PIN, OUTPUT);
     pinMode(CS, OUTPUT); //SD
     pinMode(SDA_ENTRADA, OUTPUT); //RFID
     pinMode(SDA_SAIDA, OUTPUT);
     pinMode(RESET, OUTPUT);
+    pinMode (14, INPUT); //BOTAO TEMPORARIO
 
+    SPI2.begin(SD_CLK_PIN , SD_MISO_PIN, SD_MOSI_PIN, SD_CS_PIN);
+
+    SD.begin(SD_CS_PIN, SPI2);
+
+    
     for (uint8_t reader = 0; reader < 2; reader++) {
-    mfrc522[reader].PCD_Init(sdaPins[reader], RESET); 
-    }
+      mfrc522[reader].PCD_Init(sdaPins[reader], RESET);
+      Serial.print(F("Reader "));
+      Serial.print(reader);
+      Serial.print(F(": "));
+      mfrc522[reader].PCD_DumpVersionToSerial();
+      }
 
-    ativaRFID();
 }
 
 void verificaRFID(){
 
-    mfrc522[0].PICC_HaltA();
+    if(digitalRead(14) == HIGH){
+      Serial.println("Aproxime a TAG para cadastrar");
+      cadastraTAG();
+    }else{
+
+      if (mfrc522[0].PICC_IsNewCardPresent() && mfrc522[0].PICC_ReadCardSerial()) { //ENTRADA
+            Serial.println("RFID 0 encontrado");
+            salvaTAG(0);
+            Serial.println(IDtag);
+            verificaTAG("simples");
+            IDtag = "";
+            mfrc522[0].PICC_HaltA();
+      } 
+    
+      if (mfrc522[1].PICC_IsNewCardPresent() && mfrc522[1].PICC_ReadCardSerial()) { //SAIDA
+            Serial.println("RFID 1 encontrado");
+            salvaTAG(1);
+            Serial.println(IDtag);
+            verificaTAG("simples");
+            IDtag = "";
+            mfrc522[1].PICC_HaltA();
+      } 
+    }
     delay(100);
-    mfrc522[1].PICC_HaltA();
-
-    delay(100);
-
-    if (mfrc522[0].PICC_IsNewCardPresent() && mfrc522[0].PICC_ReadCardSerial()) { //ENTRADA
-          Serial.println("cartao 0 encontrado");
-          salvaTAG(0);
-          Serial.println(IDtag);
-          verificaTAG("simples");
-          IDtag = "";
-    } 
-
-    if (mfrc522[1].PICC_IsNewCardPresent() && mfrc522[1].PICC_ReadCardSerial()) { //SAIDA
-          Serial.println("cartao 1 encontrado");
-          salvaTAG(1);
-          Serial.println(IDtag);
-          verificaTAG("simples");
-          IDtag = "";
-    } 
-    delay(200);
 }
 
 void verificaTXT(){
 
-    ativaSD();
-    if (!SD.begin(CS)){
-        while (!SD.begin(CS)){
+    
+    if (!SD.begin(SD_CS_PIN)){
+        while (!SD.begin(SD_CS_PIN)){
             Serial.println ("Erro ao inicializar cartão SD"); //ALTERAR
             delay(1000);
         } 
@@ -76,15 +96,12 @@ void verificaTXT(){
         }
     }
 
-    ativaRFID();
 }
 
 
 
 
 void verificaTAG(String tipo){
-
-    ativaSD();
 
     String IDtagTemp = "";
     dados = SD.open("/Dados.txt");
@@ -103,7 +120,6 @@ void verificaTAG(String tipo){
                     if(IDtag ==  IDtagTemp){ //revisar
                         acessoLiberado();
                         dados.close();
-                        ativaRFID();
                         return;
                     }
                     else{
@@ -113,7 +129,6 @@ void verificaTAG(String tipo){
             }
             acessoNegado();
             dados.close();
-            ativaRFID();
         }
     }
     
@@ -130,7 +145,6 @@ void verificaTAG(String tipo){
                     if(IDtag ==  IDtagTemp){ 
                         jaCadastrado();
                         dados.close();
-                        ativaRFID();
                         return;
                     }
                     else{
@@ -138,7 +152,7 @@ void verificaTAG(String tipo){
                     }
                 }
             }
-            cadastraTAG_SD();
+            //cadastraTAG_SD();ERRADO
         }
     }
     
@@ -154,41 +168,33 @@ void cadastraTAG(){
 
     while (!mfrc522[1].PICC_IsNewCardPresent() || !mfrc522[1].PICC_ReadCardSerial()){ //APENAS PODE CADASTRAR UMA TAG DENTRO DE CASA
         delay(200);
+        Serial.println("Esperando...");
         //COMPLETAR COM FUNCOES
     }
     salvaTAG(1);
-    ativaSD();
-    verificaTAG("complexa");
+    //verificaTAG("complexa");
+    cadastraTAG_SD();
 
 }
 
 void cadastraTAG_SD(){
-
+    dados = SD.open("/Dados.txt", FILE_APPEND);
+    if (dados){
+      Serial.print("Cadastrando TAG: ");
+      Serial.println(IDtag);
+      dados.println(IDtag);
+      dados.close(); 
+    }
+    IDtag = "";
 }
 
 void jaCadastrado(){
     
 }
 
-void ativaRFID(){
-
-    digitalWrite(CS, HIGH);
-    digitalWrite(SDA_ENTRADA, LOW);
-    digitalWrite(SDA_SAIDA, LOW);
-    delay(100);
-}
-
-void ativaSD(){
-
-    digitalWrite(SDA_ENTRADA, HIGH);//COMPLETAR DESATIVACOES (DESATIVAR DISPLAY, ETC)
-    digitalWrite(SDA_SAIDA, HIGH);
-    digitalWrite(CS, LOW);
-    delay(100);
-}
-
 void acessoLiberado(){
     Serial.println("Cartão encontrado");
 }
 void acessoNegado(){
-    Serial.println("Cartão não encontrado encontrado");
+    Serial.println("Cartão não encontrado");
 }

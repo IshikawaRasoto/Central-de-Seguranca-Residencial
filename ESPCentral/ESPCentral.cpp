@@ -106,7 +106,7 @@ void verificaModoAP(){
 
 void verificaComunicacao(){
     Serial1.print("TesteComunicacao");
-    delay(250);
+    delay(100);
     while(Serial1.available()){
         String mensagem = Serial1.readString();
         if(mensagem == "TesteComunicacao"){
