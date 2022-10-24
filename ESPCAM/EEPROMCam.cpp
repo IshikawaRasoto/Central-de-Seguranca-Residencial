@@ -38,6 +38,8 @@ bool testeCredenciais(){
 }
 
 bool escreverNaMemoria(String ssid, String senha, String token, String chatID){
+    Serial.println("escreverNaMemoria");
+    
     char buffer1 [TAMANHO_STRING];
     char buffer2 [TAMANHO_STRING];
     char buffer3 [TAMANHO_STRING_TOKEN];

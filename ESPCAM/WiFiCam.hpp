@@ -9,3 +9,4 @@
 void conectaWiFi();
 void testeConexao();
 void conectaTelegram();
+void informacoesWiFi();

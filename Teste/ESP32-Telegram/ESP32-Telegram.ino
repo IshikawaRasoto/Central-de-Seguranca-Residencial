@@ -16,6 +16,7 @@
 #include <ArduinoJson.h>
 
 // Replace with your network credentials
+//Nome e Senha do Wi-fi
 const char* ssid = "-2.4G";
 const char* password = "z^C9Mjn7@vRNqR3dH2#t";
 
@@ -25,6 +26,7 @@ const char* password = "z^C9Mjn7@vRNqR3dH2#t";
 // Use @myidbot to find out the chat ID of an individual or a group
 // Also note that you need to click "start" on a bot before it can
 // message you
+//ID do usuario que podera enviar mensagem
 #define CHAT_ID "1716025024"
 
 #ifdef ESP8266

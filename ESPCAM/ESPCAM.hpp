@@ -20,4 +20,6 @@ void verificaDadosWiFi();
 void verificaConexao();
 void testeESPComunicacao();
 
+void modoAP();
+
 void setModoAP(volatile bool ap);

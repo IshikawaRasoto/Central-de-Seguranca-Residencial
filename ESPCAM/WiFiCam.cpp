@@ -14,9 +14,12 @@
 #include <Ethernet.h>
 #include <WebServer.h>
 
+String ssid;
+String senha;
+String token;
+String chatID;
+
 void conectaWiFi(){
-    String ssid = EEPROM.readString(EEPROM_SSID);
-    String senha = EEPROM.readString(EEPROM_SENHA);
 
     char char_ssid[TAMANHO_STRING];
     char char_senha[TAMANHO_STRING];
@@ -47,4 +50,28 @@ void conectaTelegram(){
     String resposta;
 
     while(resposta != "Ok");
+}
+
+void informacoesWiFi(){
+    int i = 0;
+    while(i < 4){
+        while(!Serial1.available());
+        String recebido = Serial1.readString();
+        Serial.println("String recebida: " + recebido);
+        switch(i){
+            case 0:
+                ssid = recebido;
+                break;
+            case 1:
+                senha = recebido;
+                break;
+            case 2:
+                token = recebido;
+                break;
+            case 3:
+                chatID = recebido;
+                break;
+        }
+        i++;
+    }
 }

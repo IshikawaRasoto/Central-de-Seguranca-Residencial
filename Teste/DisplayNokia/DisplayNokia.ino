@@ -4,6 +4,9 @@
 
 Adafruit_PCD8544 display = Adafruit_PCD8544(18,23,4,15,2);
 
+unsigned long previousTime=0;
+
+
 static const uint8_t arduino_icon[1024]  = 
 {
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf0, 0xff, 0xff, 0xff, 0xff, 0xff, 
@@ -73,6 +76,28 @@ static const uint8_t book_icon[1024] =
   0x1f, 0xfe, 0x00, 0x03, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
+void status_wifi()
+{
+  if(verifica_wifi())
+  {
+    display.clearDisplay(); 
+    display.setCursor(0,0); 
+    display.setTextSize(1); 
+    display.println("Wi-fi [OK]");   
+    display.display(); 
+  }
+
+  else
+  {
+    display.clearDisplay(); 
+    display.setCursor(0,0); 
+    display.setTextSize(1); 
+    display.println("Wi-fi [NOK]");   
+    display.display(); 
+  }
+
+}
+
 void setup()   
 {
   Serial.begin(115200);
@@ -82,7 +107,65 @@ void setup()
 
 void loop() 
 {
-  display.clearDisplay();
+  currentTime = millis();
+
+  /*
+  if((currentTime - previousTime) > 6000){
+    previousTime = currentTime;
+    display.clearDisplay(); //Limpa a tela
+    display.setCursor(0,0); //Seta onde comeca o texto
+    display.setTextSize(1); //Tamanho do texto
+    display.println("Wi-fi [OK]\nAlarm [OK]");   
+    display.display(); //Transferir informacao
+    display.clearDisplay();
+  }
+  */
+
+  switch(notificacao)
+  {
+    case 1 : /*Alarme*/
+    if((currentTime - previousTime) > 10000)
+    {
+      previousTime = currentTime;
+      display.clearDisplay();
+      display.setCursor(0,0);
+      display.setTextSize(0.5);
+      display.println("Alarme\nDisparado!");
+      display.display();
+    }
+    
+
+    break;
+
+    case 2 : /*Modo AP*/
+    if((currentTime - previousTime) > 10000)
+    {
+      previousTime = currentTime;
+      display.clearDisplay();
+      display.setCursor(0,0);
+      display.setTextSize(0.5);
+      display.println("Em MODO AP!");
+      display.display();
+    }
+    
+    break;
+
+    case 3 : /*Campainha*/
+    if((currentTime - previousTime) > 10000)
+    {
+      previousTime = currentTime;
+      display.clearDisplay();
+      display.setCursor(0,0);
+      display.setTextSize(0.5);
+      display.println("Campainha!");
+      display.display();
+    }
+    
+
+    break;
+  }
+ 
+  /*display.clearDisplay();
   display.drawBitmap(0, 0, arduino_icon, 84, 48, 1);
   display.display();
   delay(2000);
@@ -124,5 +207,5 @@ void loop()
   display.println("19\nSetembro\n2022");
   display.display();
 
-  delay(1000);
+  delay(1000);*/
 }

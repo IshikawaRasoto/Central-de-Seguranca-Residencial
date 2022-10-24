@@ -13,7 +13,7 @@ void inicializaEEPROM(){
 }
 
 void limparMemoria(){
-    for(unsigned int i = 0; i < 250; i++){
+    for(unsigned int i = 0; i < 400; i++){
         EEPROM.writeByte(i, 0);
     }
     EEPROM.commit();

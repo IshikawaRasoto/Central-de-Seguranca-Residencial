@@ -4,18 +4,19 @@
     Equipe 20 - Rafael Eijy Ishikawa Rasoto, Gabriel Spadafora e Nicolas Riuichi Oda.
 */
 
-volatile bool modoAP;
 volatile bool statusComunicacao;
 
 volatile char statusWiFi;
 
 #include "defineESPCAM.hpp"
 #include "ESPCam.hpp"
-#include "EEPROMCam.hpp"
+//#include "EEPROMCam.hpp"
+#include "WiFiCam.hpp"
 
 void configuracao(){
     pinMode(TRANCA, OUTPUT);
     serialConfig();
+    informacoesWiFi();
 }
 
 void executar(){
@@ -35,7 +36,6 @@ void serialConfig(){
 }
 
 void inicializarVariaveis(){
-    modoAP = false;
     statusComunicacao = false;
 }
 
@@ -44,19 +44,13 @@ void verificaConexao(){
 }
 
 void verificaModoAP(){
-    if(modoAP)
-        //limparMemoria();
-    if(testeCredenciais())
-        return;
-    modoAP = true;
     //while(enviaFormulario());
 }
 
 void testeESPComunicacao(){
   
-    while(!Serial1.available()){
-        
-    }
+    while(!Serial1.available());
+
     String mensagem = Serial1.readString();
     Serial.println(mensagem);
     if(mensagem == "TesteComunicacao"){
@@ -67,8 +61,7 @@ void testeESPComunicacao(){
         delay(5000);
         digitalWrite (TRANCA, LOW);
         Serial1.print("resetRFID");
-    }
-    else if("modoAP"){
-        modoAP = true;
+    }else if("RESTART"){
+        ESP.restart();
     }
 }

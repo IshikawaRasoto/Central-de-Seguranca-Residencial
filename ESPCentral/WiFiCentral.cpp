@@ -85,10 +85,10 @@ bool enviaFormulario(){
 
     Serial.println("Servidor HTTP iniciado");
 
-    String ssidAux      = EEPROM.readString(EEPROM_SSID);
-    String senhaAux     = EEPROM.readString(EEPROM_SENHA);
-    String tokenAux     = EEPROM.readString(EEPROM_TOKEN);
-    String chatIDAux    = EEPROM.readString(EEPROM_CHATID);
+    String ssidAux    = EEPROM.readString(EEPROM_SSID);
+    String senhaAux   = EEPROM.readString(EEPROM_SENHA);
+    String tokenAux   = EEPROM.readString(EEPROM_TOKEN);
+    String chatIDAux  = EEPROM.readString(EEPROM_CHATID);
 
     while(ssidAux.length() <= 0 || senhaAux.length() <= 0 || tokenAux.length() <= 0 || chatIDAux.length() <= 0){
         server.handleClient();
@@ -125,23 +125,26 @@ void handleNotFound(){
 
 void handleSubmit(){
     String sucesso_resposta = "<h1> Sucesso! </h1>";
-    sucesso_resposta += "<h2> O dispositivo irá reiniciar em 3 segundos ... </h2>";
+    sucesso_resposta += "<h2> O dispositivo irá reiniciar em alguns segundos ... </h2>";
 
     String erro_resposta = "<h1> Erro! </h1>";
     erro_resposta += "<a href='/'>Volte</a>para tentar novamente!";
 
     if((escreverNaMemoria(String(server.arg("ssid")), String(server.arg("password")), String(server.arg("token")), String(server.arg("chatID"))))){
         server.send(200, "text/html", sucesso_resposta);
-        EEPROM.commit();
-        Serial1.print("REINICIAR");
-        delay(15000);
+
+        String ssid_buffer    = EEPROM.readString(EEPROM_SSID);
+        String senha_buffer   = EEPROM.readString(EEPROM_SENHA);
+        String token_buffer   = EEPROM.readString(EEPROM_TOKEN);
+        String chatID_buffer  = EEPROM.readString(EEPROM_CHATID);
+
+        Serial1.print("RESTART");
+
+        delay(3000);
         ESP.restart();
     }else
         server.send(200, "text/html", erro_resposta); 
 }
-
-
-
 
 
 /* *************************************************** */

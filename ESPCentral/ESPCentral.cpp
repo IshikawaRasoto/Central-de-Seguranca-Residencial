@@ -35,6 +35,19 @@ void configuracao(){
     serialConfig();
     inicializaEEPROM();
     carregarDados(&ssid, &senha, &token, &chatID);
+    delay(6000);
+    Serial.println("SSID enviado: " + ssid);
+    Serial1.print(ssid);
+    delay(2000);
+    Serial.println("Senha Enviada: " + senha);
+    Serial1.print(senha);
+    delay(2000);
+    Serial.println("Token enviado: " + token);
+    Serial1.print(token);
+    delay(5000);
+    Serial.println("ChatID Enviado: " + chatID);
+    Serial1.print(chatID);
+    delay(2000);
     inicializarVariaveis();
     configPinos();
     configModulos();
@@ -74,6 +87,7 @@ void configModulos(){
 void executar(){
     verificacoes();
     operacoes();
+    
 }
 
 void operacoes(){
@@ -93,14 +107,12 @@ void verificaConexao(){
 }
 
 void verificaModoAP(){
-    /*if(modoAP){
+    if(modoAP)
         limparMemoria();
-        Serial1.print("ModoAP");
-    }
     if(testeCredenciais())
         return;
     modoAP = true;
-    while(enviaFormulario());*/
+    while(enviaFormulario());
 }
 
 void verificaComunicacao(){
