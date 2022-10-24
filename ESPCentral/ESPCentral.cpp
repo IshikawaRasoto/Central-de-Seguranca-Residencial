@@ -11,7 +11,6 @@
 #include "DHTCentral.hpp"
 #include "RFIDCentral.hpp"
 
-
 //Variáveis de Wi-Fi
 String ssid;
 String senha;
@@ -85,7 +84,7 @@ void operacoes(){
 void verificacoes(){
     verificaModoAP();
     verificaConexao();
-    verificaComunicacao();
+    //verificaComunicacao();
     verificaAlarme();
 }
 
@@ -105,19 +104,22 @@ void verificaModoAP(){
 }
 
 void verificaComunicacao(){
+    
     Serial1.print("TesteComunicacao");
-    delay(100);
-    while(Serial1.available()){
-        String mensagem = Serial1.readString();
-        if(mensagem == "TesteComunicacao"){
-            statusComunicacao = true;
-            Serial.println("Comunicação Serial OK");
-            return;
-        }
-        statusComunicacao = false;
-        Serial.println("Comunicação Serial NOK");
+
+    while(!Serial1.available());
+    String mensagem = Serial1.readString();
+    Serial.println(mensagem);
+    if(mensagem == "TesteComunicacao"){
+        statusComunicacao = true;
+        Serial.println("Comunicação Serial OK");
+        return;
     }
+    statusComunicacao = false;
+    Serial.println("Comunicação Serial NOK");
+    
 }
+
 void verificaAlarme(){
     if(!alarme)
         return;

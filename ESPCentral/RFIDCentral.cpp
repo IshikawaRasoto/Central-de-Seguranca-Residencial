@@ -9,11 +9,6 @@
 #include <MFRC522.h>
 
 
-#define SD_CLK_PIN       25
-#define SD_MOSI_PIN      26
-#define SD_MISO_PIN      32
-#define SD_CS_PIN        33
-
 //using namespace ext;
 
 byte sdaPins[] = {SDA_ENTRADA, SDA_SAIDA};
@@ -25,6 +20,8 @@ SPIClass SPI2 (HSPI);
 File dados;
 
 String IDtag = ""; 
+
+bool jaCadastradoFlag = false;
 
 void configuraRFID_SD(){
 
@@ -58,7 +55,7 @@ void verificaRFID(){
     }else{
 
       if (mfrc522[0].PICC_IsNewCardPresent() && mfrc522[0].PICC_ReadCardSerial()) { //ENTRADA
-            Serial.println("RFID 0 encontrado");
+            Serial.println("RFID 0:");
             salvaTAG(0);
             Serial.println(IDtag);
             verificaTAG("simples");
@@ -67,7 +64,7 @@ void verificaRFID(){
       } 
     
       if (mfrc522[1].PICC_IsNewCardPresent() && mfrc522[1].PICC_ReadCardSerial()) { //SAIDA
-            Serial.println("RFID 1 encontrado");
+            Serial.println("RFID 1:");
             salvaTAG(1);
             Serial.println(IDtag);
             verificaTAG("simples");
@@ -152,6 +149,7 @@ void verificaTAG(String tipo){
                     }
                 }
             }
+            dados.close();
             //cadastraTAG_SD();ERRADO
         }
     }
@@ -172,8 +170,15 @@ void cadastraTAG(){
         //COMPLETAR COM FUNCOES
     }
     salvaTAG(1);
-    //verificaTAG("complexa");
-    cadastraTAG_SD();
+    verificaTAG("complexa");
+    if (jaCadastradoFlag){
+        jaCadastradoFlag = false;
+        IDtag = "";
+    }
+    else {
+        cadastraTAG_SD();
+    }
+    
 
 }
 
@@ -185,15 +190,25 @@ void cadastraTAG_SD(){
       dados.println(IDtag);
       dados.close(); 
     }
+    String IDtagTotal = "/" + IDtag + ".txt";
+
+    char IDtagChar[15];
+    IDtagTotal.toCharArray(IDtagChar, 15);
+    dados = SD.open(IDtagChar, FILE_WRITE);
+    // criar funcao junto ao telegram
+    dados.close();
     IDtag = "";
 }
 
 void jaCadastrado(){
-    
+    jaCadastradoFlag = true;
+    Serial.println("TAG ja cadastrada");
 }
 
 void acessoLiberado(){
     Serial.println("Cartão encontrado");
+    Serial1.print("abrir");
+    
 }
 void acessoNegado(){
     Serial.println("Cartão não encontrado");

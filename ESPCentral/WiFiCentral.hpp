@@ -18,3 +18,6 @@ bool enviaFormulario();
 void handleRoot();
 void handleNotFound();
 void handleSubmit();
+
+void handleNewMessages(int numNewMessages);
+void comandosTelegram();

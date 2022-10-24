@@ -14,6 +14,7 @@ volatile char statusWiFi;
 #include "EEPROMCam.hpp"
 
 void configuracao(){
+    pinMode(TRANCA, OUTPUT);
     serialConfig();
 }
 
@@ -53,13 +54,21 @@ void verificaModoAP(){
 
 void testeESPComunicacao(){
   
-    while(Serial1.available()){
-        String mensagem = Serial1.readString();
-        if(mensagem == "TesteComunicacao"){
-            Serial1.print(mensagem);
-        }
-        else if("modoAP"){
-            modoAP = true;
-        }
+    while(!Serial1.available()){
+        
+    }
+    String mensagem = Serial1.readString();
+    Serial.println(mensagem);
+    if(mensagem == "TesteComunicacao"){
+        Serial1.print(mensagem);
+    }
+    else if(mensagem == "abrir"){
+        digitalWrite (TRANCA, HIGH);
+        delay(5000);
+        digitalWrite (TRANCA, LOW);
+        Serial1.print("resetRFID");
+    }
+    else if("modoAP"){
+        modoAP = true;
     }
 }

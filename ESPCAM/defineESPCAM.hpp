@@ -6,6 +6,7 @@
 
 #pragma once
 
+#define TRANCA 14
 #define TX_CENTRAL 13
 #define RX_CENTRAL 12
 

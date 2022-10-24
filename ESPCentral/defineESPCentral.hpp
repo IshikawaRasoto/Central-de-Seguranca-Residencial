@@ -37,3 +37,7 @@
 #define CS 5
 #define RESET 22
 #define DHT11_DATA 35
+#define SD_CLK_PIN       25
+#define SD_MOSI_PIN      26
+#define SD_MISO_PIN      32
+#define SD_CS_PIN        33
