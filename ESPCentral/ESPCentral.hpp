@@ -11,6 +11,8 @@
 void configuracao();
 void executar();
 
+
+void enviaDadosWiFi();
 void verificacoes();
 void operacoes();
 void serialConfig();

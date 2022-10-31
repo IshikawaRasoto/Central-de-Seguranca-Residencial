@@ -38,12 +38,12 @@ void configuraRFID_SD(){
 
     
     for (uint8_t reader = 0; reader < 2; reader++) {
-      mfrc522[reader].PCD_Init(sdaPins[reader], RESET);
-      Serial.print(F("Reader "));
-      Serial.print(reader);
-      Serial.print(F(": "));
-      mfrc522[reader].PCD_DumpVersionToSerial();
-      }
+        mfrc522[reader].PCD_Init(sdaPins[reader], RESET);
+        Serial.print(F("Reader "));
+        Serial.print(reader);
+        Serial.print(F(": "));
+        mfrc522[reader].PCD_DumpVersionToSerial();
+    }
 
 }
 

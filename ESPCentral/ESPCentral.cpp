@@ -35,22 +35,10 @@ void configuracao(){
     serialConfig();
     inicializaEEPROM();
     carregarDados(&ssid, &senha, &token, &chatID);
-    delay(6000);
-    Serial.println("SSID enviado: " + ssid);
-    Serial1.print(ssid);
-    delay(2000);
-    Serial.println("Senha Enviada: " + senha);
-    Serial1.print(senha);
-    delay(2000);
-    Serial.println("Token enviado: " + token);
-    Serial1.print(token);
-    delay(5000);
-    Serial.println("ChatID Enviado: " + chatID);
-    Serial1.print(chatID);
-    delay(2000);
+    enviaDadosWiFi();
     inicializarVariaveis();
     configPinos();
-    configModulos();
+    //configModulos();
 
     /*while(statusWiFi == SEM_WIFI){
         conectaWiFi();
@@ -83,6 +71,22 @@ void configModulos(){
     verificaTXT();
 }
 
+void enviaDadosWiFi(){
+    delay(6000);
+    Serial.println("SSID enviado: " + ssid);
+    Serial1.print(ssid);
+    delay(2000);
+    Serial.println("Senha Enviada: " + senha);
+    Serial1.print(senha);
+    delay(2000);
+    Serial.println("Token enviado: " + token);
+    Serial1.print(token);
+    delay(5000);
+    Serial.println("ChatID Enviado: " + chatID);
+    Serial1.print(chatID);
+    delay(2000);
+}
+
 // Execução
 void executar(){
     verificacoes();
@@ -98,7 +102,7 @@ void operacoes(){
 void verificacoes(){
     verificaModoAP();
     verificaConexao();
-    //verificaComunicacao();
+    verificaComunicacao();
     verificaAlarme();
 }
 
@@ -129,6 +133,14 @@ void verificaComunicacao(){
     }
     statusComunicacao = false;
     Serial.println("Comunicação Serial NOK");
+
+    while(Serial.available()){
+        String mensagemSerial = Serial.readString();
+        Serial.println("Mensagem Serial Recebida: " + mensagemSerial);
+        if(mensagemSerial == "MODOAP"){
+            setModoAP(true);
+        }
+    }
     
 }
 
