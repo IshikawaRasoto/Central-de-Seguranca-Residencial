@@ -12,6 +12,7 @@
 DHT dht(DHT11_DATA, DHTTYPE);
 
 void inicializaDHT(){
+    Serial.println("Inicializar DHT");
     dht.begin();
 }
 

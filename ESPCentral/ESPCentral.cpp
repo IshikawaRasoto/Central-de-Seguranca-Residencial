@@ -38,7 +38,7 @@ void configuracao(){
     enviaDadosWiFi();
     inicializarVariaveis();
     configPinos();
-    //configModulos();
+    configModulos();
 
     /*while(statusWiFi == SEM_WIFI){
         conectaWiFi();
@@ -108,10 +108,12 @@ void verificacoes(){
 }
 
 void verificaConexao(){
+    Serial.println("Verifica Conexão");
     testeConexao(&statusWiFi);
 }
 
 void verificaModoAP(){
+    Serial.println("Verifica modo AP");
     if(modoAP)
         limparMemoria();
     if(testeCredenciais())

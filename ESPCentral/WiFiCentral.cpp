@@ -19,7 +19,7 @@
 #include <UniversalTelegramBot.h>
 #include <ArduinoJson.h>
 
-WiFiCLientSecure client;
+WiFiClientSecure client;
 UniversalTelegramBot* bot;
 
 /*
@@ -66,7 +66,7 @@ void testeConexao(volatile char* statusWiFi){
 
 void conectaTelegram(){
   String chatID = EEPROM.readString(EEPROM_CHATID);
-  String botToken = EEPROM.readStinrg(EEPROM_TOKEN);
+  String botToken = EEPROM.readString(EEPROM_TOKEN);
 
   char* char_chatID;
   char* char_botToken;

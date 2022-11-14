@@ -25,6 +25,8 @@ bool jaCadastradoFlag = false;
 
 void configuraRFID_SD(){
 
+    Serial.println("Configura RFID");
+
     pinMode(SD_CS_PIN, OUTPUT);
     pinMode(CS, OUTPUT); //SD
     pinMode(SDA_ENTRADA, OUTPUT); //RFID
@@ -77,6 +79,7 @@ void verificaRFID(){
 
 void verificaTXT(){
 
+    Serial.println("Verifica TXT");
     
     if (!SD.begin(SD_CS_PIN)){
         while (!SD.begin(SD_CS_PIN)){
