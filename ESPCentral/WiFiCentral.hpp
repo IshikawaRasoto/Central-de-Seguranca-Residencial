@@ -19,5 +19,6 @@ void handleRoot();
 void handleNotFound();
 void handleSubmit();
 
+void mensagemTelegram();
 void handleNewMessages(int numNewMessages);
-void comandosTelegram();
+void comandosTelegram(String texto, String nome);

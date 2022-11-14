@@ -22,6 +22,12 @@
 WiFiClientSecure client;
 UniversalTelegramBot* bot;
 
+String ssid_Telegram;
+String senha_Telegram;
+String chatID_Telegram;
+String botToken_Telegram;
+String chat_id; // Chat verificado pelo BOT, comparamos com o que temos cadastrado na EEPROM chatID
+
 /*
 // Checks for new messages every 1 second.
 int botRequestDelay = 1000;
@@ -35,14 +41,14 @@ bool ledState = LOW;
 WebServer server(80);
 
 void conectaWiFi(){
-    String ssid = EEPROM.readString(EEPROM_SSID);
-    String senha = EEPROM.readString(EEPROM_SENHA);
+    ssid_Telegram = EEPROM.readString(EEPROM_SSID);
+    senha_Telegram = EEPROM.readString(EEPROM_SENHA);
 
     char char_ssid[TAMANHO_STRING];
     char char_senha[TAMANHO_STRING];
 
-    ssid.toCharArray(char_ssid, TAMANHO_STRING);
-    senha.toCharArray(char_senha, TAMANHO_STRING);
+    ssid_Telegram.toCharArray(char_ssid, TAMANHO_STRING);
+    senha_Telegram.toCharArray(char_senha, TAMANHO_STRING);
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(char_ssid, char_senha);
@@ -53,28 +59,26 @@ void conectaWiFi(){
 void testeConexao(volatile char* statusWiFi){
     bool ping = Ping.ping("www.google.com", 3);
     if(ping){
+        Serial.println("NET OK");
         (*statusWiFi) = NET_OK;
         return;
     }
     if(WiFi.status() == WL_CONNECTED){
+        Serial.println("NET NOK");   
         (*statusWiFi) = SEM_NET;
         return;
     }
+    Serial.println("sem WIFI");
     (*statusWiFi) = SEM_WIFI;
     conectaWiFi();
 }
 
 void conectaTelegram(){
-  String chatID = EEPROM.readString(EEPROM_CHATID);
-  String botToken = EEPROM.readString(EEPROM_TOKEN);
+  Serial.println("Conecta Telegram");
+  chatID_Telegram = EEPROM.readString(EEPROM_CHATID);
+  botToken_Telegram = EEPROM.readString(EEPROM_TOKEN);
 
-  char* char_chatID;
-  char* char_botToken;
-
-  chatID.toCharArray(char_chatID, TAMANHO_STRING);
-  botToken.toCharArray(char_botToken, TAMANHO_STRING_TOKEN);
-
-  bot = new UniversalTelegramBot(char_botToken, client);
+  bot = new UniversalTelegramBot(botToken_Telegram, client);
 }
 
 
@@ -159,7 +163,15 @@ void handleSubmit(){
 /* Código para o Telegram */
 /* *************************************************** */
 
-/*
+void mensagemTelegram(){
+    int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
+    while(numNewMessages){
+        Serial.println("got response");
+        handleNewMessages(numNewMessages);
+        numNewMessages = bot->getUpdates(bot->last_message_received + 1);
+    }
+}
+
 // Handle what happens when you receive new messages
 void handleNewMessages(int numNewMessages) {
   Serial.println("handleNewMessages");
@@ -167,17 +179,17 @@ void handleNewMessages(int numNewMessages) {
 
   for (int i=0; i<numNewMessages; i++) {
     // Chat id of the requester
-    String chat_id = String(bot.messages[i].chat_id);
-    if (chat_id != CHAT_ID){
-      bot.sendMessage(chat_id, "Unauthorized user", "");
+    chat_id = String(bot->messages[i].chat_id);
+    if (chat_id != chatID_Telegram){
+      bot->sendMessage(chat_id, "Unauthorized user", "");
       continue;
     }
     
     // Print the received message
-    String texto = bot.messages[i].text;
+    String texto = bot->messages[i].text;
     Serial.println(texto);
 
-    String nome = bot.messages[i].from_name;
+    String nome = bot->messages[i].from_name;
 
     comandosTelegram(texto, nome);
     
@@ -185,36 +197,15 @@ void handleNewMessages(int numNewMessages) {
 }
 
 
-void comandosTelegram(){
-    if (text == "/iniciar") {
-      String welcome = "Bem-Vindo, " + from_name + ".\n";
-      welcome += "Use the following commands to control your outputs.\n\n";
+void comandosTelegram(String texto, String nome){
+    if (texto == "/iniciar") {
+      String welcome = "Bem-Vindo, " + nome + ".\n";
       welcome += "/led_on to turn GPIO ON \n";
       welcome += "/led_off to turn GPIO OFF \n";
       welcome += "/state to request current GPIO state \n";
-      bot.sendMessage(chat_id, welcome, "");
+      bot->sendMessage(chat_id, welcome, "");
     }
-
-    if (text == "/led_on") {
-      bot.sendMessage(chat_id, "LED state set to ON", "");
-      ledState = HIGH;
-      digitalWrite(ledPin, ledState);
-    }
-    
-    if (text == "/led_off") {
-      bot.sendMessage(chat_id, "LED state set to OFF", "");
-      ledState = LOW;
-      digitalWrite(ledPin, ledState);
-    }
-    
-    if (text == "/state") {
-      if (digitalRead(ledPin)){
-        bot.sendMessage(chat_id, "LED is ON", "");
-      }
-      else{
-        bot.sendMessage(chat_id, "LED is OFF", "");
-      }
+    else if(texto == "teste"){
+      bot->sendMessage(chat_id, "Funcionou", "");
     }
 }
-
-*/

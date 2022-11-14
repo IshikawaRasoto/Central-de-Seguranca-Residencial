@@ -40,12 +40,12 @@ void configuracao(){
     configPinos();
     configModulos();
 
-    /*while(statusWiFi == SEM_WIFI){
-        conectaWiFi();
-        testeConexao(&statusWiFi);
-    }*/
 
-    //conectaTelegram();
+    conectaWiFi();
+    testeConexao(&statusWiFi);
+    
+    if(statusWiFi == NET_OK)
+        conectaTelegram();
 }
 
 void serialConfig(){
@@ -98,6 +98,7 @@ void executar(){
 void operacoes(){
     atualizarDHT(&umidade, &temperatura);
     verificaRFID();
+    mensagemTelegram();
 }
 
 void verificacoes(){

@@ -17,10 +17,12 @@ Rotinas de Interrupção
 Funções Principais
 *************************************************************/
 
-void setup(){
+void setup()
+{
     configuracao();
 }
 
-void loop(){
+void loop()
+{
     executar();
 }

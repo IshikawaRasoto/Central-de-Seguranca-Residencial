@@ -254,7 +254,8 @@ void setup(){
   Serial.println(ssid);
   WiFi.begin(ssid, password);
   clientTCP.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) 
+  {
     Serial.print(".");
     delay(500);
   }
@@ -263,15 +264,19 @@ void setup(){
   Serial.println(WiFi.localIP()); 
 }
 
-void loop() {
-  if (sendPhoto) {
+void loop() 
+{
+  if (sendPhoto) 
+  {
     Serial.println("Preparing photo");
     sendPhotoTelegram(); 
     sendPhoto = false; 
   }
-  if (millis() > lastTimeBotRan + botRequestDelay)  {
+  if (millis() > lastTimeBotRan + botRequestDelay)  
+  {
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
-    while (numNewMessages) {
+    while (numNewMessages) 
+    {
       Serial.println("got response");
       handleNewMessages(numNewMessages);
       numNewMessages = bot.getUpdates(bot.last_message_received + 1);
