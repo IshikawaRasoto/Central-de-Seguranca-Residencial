@@ -36,7 +36,7 @@
 //#define DCMD_DISPLAY 4
 #define CS 5
 #define RESET 22
-#define DHT11_DATA 35
+#define DHT11_DATA 27
 #define SD_CLK_PIN       25
 #define SD_MOSI_PIN      26
 #define SD_MISO_PIN      32

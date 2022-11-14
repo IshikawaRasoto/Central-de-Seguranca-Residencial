@@ -9,3 +9,4 @@
 #define DHTTYPE DHT11
 
 void atualizarDHT(float* umidade, float* temperatura);
+void inicializaDHT();

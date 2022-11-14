@@ -69,6 +69,7 @@ void configModulos(){
     SPI.begin();
     configuraRFID_SD();
     verificaTXT();
+    inicializaDHT();
 }
 
 void enviaDadosWiFi(){

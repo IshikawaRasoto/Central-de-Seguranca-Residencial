@@ -15,12 +15,12 @@
 #include <EEPROM.h>
 #include <Ethernet.h>
 #include <WebServer.h>
-//#include <WiFiClientSecure.h>
-//#include <UniversalTelegramBot.h>
-//#include <ArduinoJson.h>
+#include <WiFiClientSecure.h>
+#include <UniversalTelegramBot.h>
+#include <ArduinoJson.h>
 
-// WiFiCLientSecure client;
-//UniversalTelegramBot bot(BOTtoken, client);
+WiFiCLientSecure client;
+UniversalTelegramBot* bot;
 
 /*
 // Checks for new messages every 1 second.
@@ -44,8 +44,9 @@ void conectaWiFi(){
     ssid.toCharArray(char_ssid, TAMANHO_STRING);
     senha.toCharArray(char_senha, TAMANHO_STRING);
 
+    WiFi.mode(WIFI_STA);
     WiFi.begin(char_ssid, char_senha);
-
+    client.setCACert(TELEGRAM_CERTIFICATE_ROOT);
     delay(3000);
 }
 
@@ -64,9 +65,16 @@ void testeConexao(volatile char* statusWiFi){
 }
 
 void conectaTelegram(){
-    String resposta;
+  String chatID = EEPROM.readString(EEPROM_CHATID);
+  String botToken = EEPROM.readStinrg(EEPROM_TOKEN);
 
-    while(resposta != "Ok");
+  char* char_chatID;
+  char* char_botToken;
+
+  chatID.toCharArray(char_chatID, TAMANHO_STRING);
+  botToken.toCharArray(char_botToken, TAMANHO_STRING_TOKEN);
+
+  bot = new UniversalTelegramBot(char_botToken, client);
 }
 
 

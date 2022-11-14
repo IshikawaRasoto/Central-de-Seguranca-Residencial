@@ -7,12 +7,12 @@
 #include <DHT.h>
 
 #define DHTTYPE DHT11
-#define DHTPIN 25
+#define DHTPIN 7
 
 DHT dht(DHTPIN, DHTTYPE);
 
 void setup(){
-    Serial.begin(115200);
+    Serial.begin(9600);
     dht.begin();
 }
 
@@ -30,4 +30,5 @@ void loop(){
   Serial.println(t);
 
   delay(5000);
+  Serial.println("Teste");
 }

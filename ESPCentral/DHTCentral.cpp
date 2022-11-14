@@ -11,6 +11,10 @@
 
 DHT dht(DHT11_DATA, DHTTYPE);
 
+void inicializaDHT(){
+    dht.begin();
+}
+
 void atualizarDHT(float* umidade, float* temperatura){
     Serial.println("Atualizar DHT");
 
