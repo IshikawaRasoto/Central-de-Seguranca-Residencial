@@ -22,3 +22,5 @@ void handleSubmit();
 void mensagemTelegram();
 void handleNewMessages(int numNewMessages);
 void comandosTelegram(String texto, String nome);
+void mensagemParaTelegram(String mensagem);
+bool cadastroTelegram(bool tipoCadastro);

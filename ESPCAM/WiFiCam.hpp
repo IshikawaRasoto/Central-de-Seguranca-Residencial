@@ -6,7 +6,10 @@
 
 #pragma once
 
+#include <Arduino.h>
+
 void conectaWiFi();
-void testeConexao();
+void testeConexao(volatile char* statusWiFi);
 void conectaTelegram();
 void informacoesWiFi();
+String sendPhotoTelegram();

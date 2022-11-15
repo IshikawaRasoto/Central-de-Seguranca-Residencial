@@ -10,6 +10,8 @@
 #include <SPI.h>
 #include <SD.h>
 
+extern bool flagCadastro;
+
 void configuraRFID_SD();
 void verificaRFID();
 void verificaTXT();
@@ -22,3 +24,6 @@ void ativaRFID();
 void ativaSD();
 void acessoLiberado();
 void acessoNegado();
+void setCadastro(const bool x);
+void listaCadastro();
+void salvaNomeCadastro(String nome);

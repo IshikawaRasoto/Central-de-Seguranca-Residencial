@@ -9,6 +9,7 @@
 #include "EEPROMCentral.hpp"
 #include "HTML.h"
 #include "ESPCentral.hpp"
+#include "RFIDCentral.hpp"
 
 #include <WiFi.h>
 #include <ESP32Ping.h>
@@ -18,6 +19,8 @@
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
 #include <ArduinoJson.h>
+#include <SD.h>
+#include <SPI.h>
 
 WiFiClientSecure client;
 UniversalTelegramBot* bot;
@@ -27,6 +30,8 @@ String senha_Telegram;
 String chatID_Telegram;
 String botToken_Telegram;
 String chat_id; // Chat verificado pelo BOT, comparamos com o que temos cadastrado na EEPROM chatID
+bool flagNome = false;
+bool tipoCadastroWiFi = false;
 
 /*
 // Checks for new messages every 1 second.
@@ -56,29 +61,38 @@ void conectaWiFi(){
     delay(3000);
 }
 
-void testeConexao(volatile char* statusWiFi){
+void testeConexao(volatile char* statusWiFi)
+{
     bool ping = Ping.ping("www.google.com", 3);
-    if(ping){
+    if(ping)
+    {
         Serial.println("NET OK");
         (*statusWiFi) = NET_OK;
         return;
     }
-    if(WiFi.status() == WL_CONNECTED){
+
+    if(WiFi.status() == WL_CONNECTED)
+    {
         Serial.println("NET NOK");   
         (*statusWiFi) = SEM_NET;
         return;
     }
+    
     Serial.println("sem WIFI");
     (*statusWiFi) = SEM_WIFI;
     conectaWiFi();
 }
 
 void conectaTelegram(){
-  Serial.println("Conecta Telegram");
-  chatID_Telegram = EEPROM.readString(EEPROM_CHATID);
-  botToken_Telegram = EEPROM.readString(EEPROM_TOKEN);
+    Serial.println("Conecta Telegram");
+    chatID_Telegram = EEPROM.readString(EEPROM_CHATID);
+    botToken_Telegram = EEPROM.readString(EEPROM_TOKEN);
 
-  bot = new UniversalTelegramBot(botToken_Telegram, client);
+    bot = new UniversalTelegramBot(botToken_Telegram, client);
+
+    String mensagem = "Central de Segurança Residencial iniciada!\n";
+    mensagem += "Seja bem vindo! Digite /ajuda para ver os comandos existentes!\n";
+    bot->sendMessage(chatID_Telegram, mensagem, "");
 }
 
 
@@ -165,11 +179,27 @@ void handleSubmit(){
 
 void mensagemTelegram(){
     int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
-    while(numNewMessages){
+    if (tipoCadastroWiFi){
+      while(numNewMessages){
         Serial.println("got response");
-        handleNewMessages(numNewMessages);
+        for (int i=0; i<numNewMessages; i++){
+          String texto = bot->messages[i].text;
+          Serial.println(texto);
+          salvaNomeCadastro(texto);
+          flagNome = true;
+        } 
         numNewMessages = bot->getUpdates(bot->last_message_received + 1);
+      }
+      tipoCadastroWiFi = false;
     }
+    else{
+      while(numNewMessages){
+          Serial.println("got response");
+          handleNewMessages(numNewMessages);
+          numNewMessages = bot->getUpdates(bot->last_message_received + 1);
+      }
+    }
+    
 }
 
 // Handle what happens when you receive new messages
@@ -181,7 +211,7 @@ void handleNewMessages(int numNewMessages) {
     // Chat id of the requester
     chat_id = String(bot->messages[i].chat_id);
     if (chat_id != chatID_Telegram){
-      bot->sendMessage(chat_id, "Unauthorized user", "");
+      bot->sendMessage(chat_id, "Usuário não autorizado\n", "");
       continue;
     }
     
@@ -198,14 +228,62 @@ void handleNewMessages(int numNewMessages) {
 
 
 void comandosTelegram(String texto, String nome){
-    if (texto == "/iniciar") {
-      String welcome = "Bem-Vindo, " + nome + ".\n";
-      welcome += "/led_on to turn GPIO ON \n";
-      welcome += "/led_off to turn GPIO OFF \n";
-      welcome += "/state to request current GPIO state \n";
-      bot->sendMessage(chat_id, welcome, "");
+    if (texto == "/ajuda") {
+        String welcome = "Olá, " + nome + ".\n";
+        welcome += "Os comandos que você pode utilizar são: \n";
+        welcome += "/cadastro -> Comando utilizado para cadastrar um novo usuário\n";
+        welcome += "/usuario -> Visualizar um usuário em específico\n";
+        welcome += "/lista -> Vizualizar a lista de usuários\n";
+        welcome += "/termometro -> Vizualizar a temperatura e umidade\n";
+        welcome += "/novaescala -> Criar uma escala de horário\n";
+        welcome += "/hora -> Ajustar a hora e data do sistema\n";
+        welcome += "/teste -> Testar comunicação com o sistema\n";
+        bot->sendMessage(chat_id, welcome, "");
     }
-    else if(texto == "teste"){
-      bot->sendMessage(chat_id, "Funcionou", "");
+    else if(texto == "/cadastro"){
+        bot->sendMessage(chat_id, "Aproxime a TAG para o cadastro.", "");
+        setCadastro (true);
+        verificaRFID();
     }
+    else if(texto == "/usuario"){
+        
+    }
+    else if(texto == "/lista"){
+        
+    }
+    else if(texto == "/termometro"){
+        
+    }
+    else if(texto == "/novaescala"){
+        
+    }
+    else if(texto == "/hora"){
+        
+    }
+
+    else if(texto == "/foto"){
+        Serial1.print("foto");
+    }    
+    else if(texto == "/teste"){
+      bot->sendMessage(chat_id, "Comunicação bem-sucedida", "");
+    }
+    else {
+      bot->sendMessage(chat_id, "Insira um comando válido!", "");
+    }
+}
+
+void mensagemParaTelegram(String mensagem){
+    bot->sendMessage(chat_id, mensagem, "");
+}
+
+bool cadastroTelegram(bool tipoCadastro){
+    tipoCadastroWiFi = tipoCadastro;
+    mensagemTelegram();
+    if (flagNome){
+        flagNome = false;
+        return true;
+    }
+
+    return false;
+    
 }

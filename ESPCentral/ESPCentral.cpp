@@ -128,6 +128,16 @@ void verificaComunicacao(){
     Serial1.print("TesteComunicacao");
 
     while(!Serial1.available());
+
+    /*bool comunicacao = false;
+    long int i = 0;
+    while(!Serial1.available() && i<240000000){
+        i++;
+    }
+    if(Serial.available())
+        comunicacao = true;*/
+
+
     String mensagem = Serial1.readString();
     Serial.println(mensagem);
     if(mensagem == "TesteComunicacao"){

@@ -6,9 +6,11 @@
 
 #include "defineESPCentral.hpp"
 #include "RFIDCentral.hpp"
+#include "WiFiCentral.hpp"
 #include <MFRC522.h>
 
-
+ bool flagCadastro;
+ String nomeCadastro = "";
 //using namespace ext;
 
 byte sdaPins[] = {SDA_ENTRADA, SDA_SAIDA};
@@ -22,6 +24,7 @@ File dados;
 String IDtag = ""; 
 
 bool jaCadastradoFlag = false;
+bool tipoCadastro = false;
 
 void configuraRFID_SD(){
 
@@ -33,6 +36,7 @@ void configuraRFID_SD(){
     pinMode(SDA_SAIDA, OUTPUT);
     pinMode(RESET, OUTPUT);
     pinMode (14, INPUT); //BOTAO TEMPORARIO
+    flagCadastro = false;
 
     SPI2.begin(SD_CLK_PIN , SD_MISO_PIN, SD_MOSI_PIN, SD_CS_PIN);
 
@@ -51,9 +55,10 @@ void configuraRFID_SD(){
 
 void verificaRFID(){
 
-    if(digitalRead(14) == HIGH){
+    if(flagCadastro){
       Serial.println("Aproxime a TAG para cadastrar");
       cadastraTAG();
+      flagCadastro = false;
     }else{
 
       if (mfrc522[0].PICC_IsNewCardPresent() && mfrc522[0].PICC_ReadCardSerial()) { //ENTRADA
@@ -198,14 +203,25 @@ void cadastraTAG_SD(){
     char IDtagChar[15];
     IDtagTotal.toCharArray(IDtagChar, 15);
     dados = SD.open(IDtagChar, FILE_WRITE);
-    // criar funcao junto ao telegram
+    dados.close();
+    String mensagem = "Insira o nome do Usuário\n";
+    mensagemParaTelegram(mensagem);
+    tipoCadastro = true;
+    while (!cadastroTelegram(tipoCadastro)){
+    }
+    tipoCadastro =false;
+    dados = SD.open(IDtagChar, FILE_APPEND);
+    dados.print(nomeCadastro);
     dados.close();
     IDtag = "";
 }
 
+
 void jaCadastrado(){
     jaCadastradoFlag = true;
     Serial.println("TAG ja cadastrada");
+    String mensagem = "Usuário já cadastrado!";
+    mensagemParaTelegram(mensagem);
 }
 
 void acessoLiberado(){
@@ -215,4 +231,12 @@ void acessoLiberado(){
 }
 void acessoNegado(){
     Serial.println("Cartão não encontrado");
+}
+
+void setCadastro(const bool x){
+    flagCadastro = x;
+}
+
+void salvaNomeCadastro (String nome){
+  nomeCadastro = nome;
 }
