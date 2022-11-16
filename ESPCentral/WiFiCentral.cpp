@@ -90,8 +90,8 @@ void conectaTelegram(){
 
     bot = new UniversalTelegramBot(botToken_Telegram, client);
 
-    String mensagem = "Central de Segurança Residencial iniciada!\n";
-    mensagem += "Seja bem vindo! Digite /ajuda para ver os comandos existentes!\n";
+    String mensagem = "Seja bem vindo a Central de Segurança Residencial!\n";
+    mensagem += "Digite /iniciar para inicializar o sistema.\n";
     bot->sendMessage(chatID_Telegram, mensagem, "");
 }
 
@@ -228,17 +228,22 @@ void handleNewMessages(int numNewMessages) {
 
 
 void comandosTelegram(String texto, String nome){
-    if (texto == "/ajuda") {
-        String welcome = "Olá, " + nome + ".\n";
-        welcome += "Os comandos que você pode utilizar são: \n";
-        welcome += "/cadastro -> Comando utilizado para cadastrar um novo usuário\n";
-        welcome += "/usuario -> Visualizar um usuário em específico\n";
-        welcome += "/lista -> Vizualizar a lista de usuários\n";
-        welcome += "/termometro -> Vizualizar a temperatura e umidade\n";
-        welcome += "/novaescala -> Criar uma escala de horário\n";
-        welcome += "/hora -> Ajustar a hora e data do sistema\n";
-        welcome += "/teste -> Testar comunicação com o sistema\n";
-        bot->sendMessage(chat_id, welcome, "");
+    if (texto == "/iniciar"){
+        String mensagem = nome + ", o sistema foi inicializado com sucesso!\n";
+        mensagem += "Digite /ajuda para ver os comandos existentes.\n";
+        bot->sendMessage(chat_id, mensagem, "");
+    }
+    else if (texto == "/ajuda") {
+        String mensagem = "Olá, " + nome + ".\n";
+        mensagem += "Os comandos que você pode utilizar são: \n";
+        mensagem += "/cadastro -> Comando utilizado para cadastrar um novo usuário\n";
+        mensagem += "/usuario -> Visualizar um usuário em específico\n";
+        mensagem += "/lista -> Vizualizar a lista de usuários\n";
+        mensagem += "/termometro -> Vizualizar a temperatura e umidade\n";
+        mensagem += "/novaescala -> Criar uma escala de horário\n";
+        mensagem += "/hora -> Ajustar a hora e data do sistema\n";
+        mensagem += "/teste -> Testar comunicação com o sistema\n";
+        bot->sendMessage(chat_id, mensagem, "");
     }
     else if(texto == "/cadastro"){
         bot->sendMessage(chat_id, "Aproxime a TAG para o cadastro.", "");
@@ -288,7 +293,24 @@ bool cadastroTelegram(bool tipoCadastro){
     
 }
 
-void acessoLiberadoWiFi(String nomeUsuario){
-    String mensagem = "Acesso liberado para " + nomeUsuario;
-    bot->sendMessage(chat_id, mensagem, "");
+void acessoLiberadoWiFi(String nomeUsuario, int tipoEntrada){
+    Serial.println("Acesso Liberado Wifi");
+    Serial.println("Nome = " + nomeUsuario);
+    Serial.print ("Tipo entrada = ");
+    Serial.println(tipoEntrada);
+    if (tipoEntrada == 1){
+      Serial.println("Entrou tipo 1");
+      String mensagem = nomeUsuario;
+      mensagem += " saiu da residência\n";
+      Serial.println(mensagem);
+      bot->sendMessage(chat_id, mensagem, "");
+    }
+    else{
+      Serial.println("Entrou tipo 0");
+      String mensagem = nomeUsuario;
+      mensagem += " entrou na residência\n";
+      Serial.println(mensagem);
+      bot->sendMessage(chat_id, mensagem, "");
+    }
+    
 }

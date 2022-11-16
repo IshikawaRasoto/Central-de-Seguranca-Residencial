@@ -11,6 +11,7 @@
 
  bool flagCadastro;
  String nomeCadastro = "";
+ int tipoEntrada;
 //using namespace ext;
 
 byte sdaPins[] = {SDA_ENTRADA, SDA_SAIDA};
@@ -65,6 +66,7 @@ void verificaRFID(){
             Serial.println("RFID 0:");
             salvaTAG(0);
             Serial.println(IDtag);
+            tipoEntrada = 0;
             verificaTAG("simples");
             IDtag = "";
             mfrc522[0].PICC_HaltA();
@@ -74,6 +76,7 @@ void verificaRFID(){
             Serial.println("RFID 1:");
             salvaTAG(1);
             Serial.println(IDtag);
+            tipoEntrada = 1;
             verificaTAG("simples");
             IDtag = "";
             mfrc522[1].PICC_HaltA();
@@ -123,7 +126,6 @@ void verificaTAG(String tipo){
 
                 else if(letra == '\n'){
                     if(IDtag ==  IDtagTemp){ //revisar
-                        acessoLiberado();
                         dados.close();
                         String total = "/" + IDtag + ".txt";
                         Serial.println("total = " + total);
@@ -137,16 +139,20 @@ void verificaTAG(String tipo){
                             Serial.println("Entrou no loop");
                             char letra1 = dados.read();
                         
-                            if(isPrintable(letra)){
-                                IDtagTemp.concat (letra1);
+                            if(isPrintable(letra1)){
+                                if(letra1 == '/'){
+                                  Serial.println("Nome lido = "+ IDtagTemp);
+                                  Serial.print("TipoEntrada = ");
+                                  Serial.println(tipoEntrada);
+                                  dados.close();
+                                  acessoLiberadoWiFi(IDtagTemp, tipoEntrada);
+                                  acessoLiberado();
+                                }
+                                else {
+                                  IDtagTemp.concat (letra1);
+                                }
+                 
                             }
-
-                            else if(letra == '/'){
-                                Serial.println("Nome lido = "+ IDtagTemp);
-                                acessoLiberadoWiFi(IDtagTemp);
-                                dados.close();
-                            }
-
                         }
                         return;
                     }

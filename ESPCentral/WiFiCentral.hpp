@@ -24,4 +24,4 @@ void handleNewMessages(int numNewMessages);
 void comandosTelegram(String texto, String nome);
 void mensagemParaTelegram(String mensagem);
 bool cadastroTelegram(bool tipoCadastro);
-void acessoLiberadoWiFi(String nomeUsuario);
+void acessoLiberadoWiFi(String nomeUsuario, int tipoEntrada);
