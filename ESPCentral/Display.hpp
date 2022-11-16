@@ -1,4 +1,6 @@
-void atualizaStatus(volatile char statusWifi);
+void atualizaStatus(const bool modoAP, const char statusWiFi, const bool alarme);
+
+void serialDisplayConfig();
 
 static const uint8_t arduino_icon[1024]  = 
 {

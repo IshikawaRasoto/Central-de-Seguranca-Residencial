@@ -125,6 +125,29 @@ void verificaTAG(String tipo){
                     if(IDtag ==  IDtagTemp){ //revisar
                         acessoLiberado();
                         dados.close();
+                        String total = "/" + IDtag + ".txt";
+                        Serial.println("total = " + total);
+                        char totalChar[15];
+
+                        total.toCharArray(totalChar, 15);
+                        
+                        dados = SD.open (totalChar);
+                        IDtagTemp = "";
+                        while (dados.available()){
+                            Serial.println("Entrou no loop");
+                            char letra1 = dados.read();
+                        
+                            if(isPrintable(letra)){
+                                IDtagTemp.concat (letra1);
+                            }
+
+                            else if(letra == '/'){
+                                Serial.println("Nome lido = "+ IDtagTemp);
+                                acessoLiberadoWiFi(IDtagTemp);
+                                dados.close();
+                            }
+
+                        }
                         return;
                     }
                     else{
@@ -213,6 +236,8 @@ void cadastraTAG_SD(){
     dados = SD.open(IDtagChar, FILE_APPEND);
     dados.print(nomeCadastro);
     dados.close();
+    mensagem = "TAG cadastrada com sucesso!\n";
+    mensagemParaTelegram(mensagem);
     IDtag = "";
 }
 
@@ -220,7 +245,7 @@ void cadastraTAG_SD(){
 void jaCadastrado(){
     jaCadastradoFlag = true;
     Serial.println("TAG ja cadastrada");
-    String mensagem = "Usuário já cadastrado!";
+    String mensagem = "TAG já cadastrado!";
     mensagemParaTelegram(mensagem);
 }
 
@@ -238,5 +263,5 @@ void setCadastro(const bool x){
 }
 
 void salvaNomeCadastro (String nome){
-  nomeCadastro = nome;
+  nomeCadastro = nome + "/";
 }

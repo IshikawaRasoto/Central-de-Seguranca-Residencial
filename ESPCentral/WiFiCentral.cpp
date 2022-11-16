@@ -287,3 +287,8 @@ bool cadastroTelegram(bool tipoCadastro){
     return false;
     
 }
+
+void acessoLiberadoWiFi(String nomeUsuario){
+    String mensagem = "Acesso liberado para " + nomeUsuario;
+    bot->sendMessage(chat_id, mensagem, "");
+}

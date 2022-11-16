@@ -53,6 +53,7 @@ void serialConfig(){
     Serial1.begin(115200, SERIAL_8N1, RX_CAM, TX_CAM);
 }
 
+
 void inicializarVariaveis(){
     modoAP              = false;
     statusComunicacao   = true;
