@@ -243,6 +243,7 @@ void comandosTelegram(String texto, String nome){
         mensagem += "/novaescala -> Criar uma escala de horário\n";
         mensagem += "/hora -> Ajustar a hora e data do sistema\n";
         mensagem += "/teste -> Testar comunicação com o sistema\n";
+        mensagem += "/foto -> Para tirar uma foto\n";
         bot->sendMessage(chat_id, mensagem, "");
     }
     else if(texto == "/cadastro"){

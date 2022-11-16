@@ -35,7 +35,9 @@ void conectaWiFi()
     ssid_Telegram.toCharArray(char_ssid, TAMANHO_STRING);
     senha_Telegram.toCharArray(char_senha, TAMANHO_STRING);
 
+    WiFi.mode(WIFI_STA);
     WiFi.begin(char_ssid, char_senha);
+    clientTCP.setCACert(TELEGRAM_CERTIFICATE_ROOT);
 
     delay(3000);
 }

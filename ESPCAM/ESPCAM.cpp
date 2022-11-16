@@ -132,7 +132,6 @@ void testeESPComunicacao()
         digitalWrite (TRANCA, HIGH);
         delay(5000);
         digitalWrite (TRANCA, LOW);
-        Serial1.print("resetRFID");
     }
     
     else if(mensagem == "RESTART")
