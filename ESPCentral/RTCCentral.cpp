@@ -15,13 +15,19 @@ void inicializaRTC(){
 }
 
 void setHorario(const int dia, const int mes, const int ano, const int h, const int m, const int s){
-    rtc.setTime(s, m, h, dia, mes, ano);
+    rtc.setTime(s, m, h, dia, mes, ano + 2000);
+    Serial.println(dia);
+    Serial.println(mes);
+    Serial.println(ano);
+    Serial.println(h);
+    Serial.println(m);
+    Serial.println(s);
 }
 
-void getHorario(String* horario){
-    (*horario) = rtc.getTime("%T");
+String getHorario(){
+    return rtc.getTime("%T");
 }
 
-void getData(String* data){
-    (*data) = rtc.getTime("%D");
+String getData(){
+    return rtc.getTime("%D");
 }

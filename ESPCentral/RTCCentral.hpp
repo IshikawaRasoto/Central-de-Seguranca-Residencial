@@ -10,3 +10,7 @@
 #include <time.h> //Necessária no Arquivo Principal
 
 void inicializaRTC();
+void setHorario(const int dia, const int mes, const int ano, const int h, const int m, const int s);
+
+String getHorario();
+String getData();

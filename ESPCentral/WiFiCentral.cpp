@@ -10,6 +10,7 @@
 #include "HTML.h"
 #include "ESPCentral.hpp"
 #include "RFIDCentral.hpp"
+#include "RTCCentral.hpp"
 
 #include <WiFi.h>
 #include <ESP32Ping.h>
@@ -31,7 +32,9 @@ String chatID_Telegram;
 String botToken_Telegram;
 String chat_id; // Chat verificado pelo BOT, comparamos com o que temos cadastrado na EEPROM chatID
 bool flagNome = false;
+bool flagHorario = false;
 bool tipoCadastroWiFi = false;
+bool tipoHorarioWiFi = false;
 
 /*
 // Checks for new messages every 1 second.
@@ -151,7 +154,7 @@ void handleNotFound(){
 
 void handleSubmit(){
     String sucesso_resposta = "<h1> Sucesso! </h1>";
-    sucesso_resposta += "<h2> O dispositivo irá reiniciar em alguns segundos ... </h2>";
+    sucesso_resposta += "<h2> O dispositivo sera reiniciado em alguns segundos ... </h2>";
 
     String erro_resposta = "<h1> Erro! </h1>";
     erro_resposta += "<a href='/'>Volte</a>para tentar novamente!";
@@ -179,6 +182,18 @@ void handleSubmit(){
 
 void mensagemTelegram(){
     int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
+    if (tipoHorarioWiFi){
+        while(numNewMessages){
+        Serial.println("got response");
+        for (int i=0; i<numNewMessages; i++){
+          String texto = bot->messages[i].text;
+          Serial.println(texto);
+          configHorario(texto);
+          flagHorario = true;
+        } 
+        numNewMessages = bot->getUpdates(bot->last_message_received + 1);
+      }
+    }
     if (tipoCadastroWiFi){
       while(numNewMessages){
         Serial.println("got response");
@@ -231,6 +246,7 @@ void comandosTelegram(String texto, String nome){
     if (texto == "/iniciar"){
         String mensagem = nome + ", o sistema foi inicializado com sucesso!\n";
         mensagem += "Digite /ajuda para ver os comandos existentes.\n";
+        mensagem += "Além disso, não se esqueça de atualizar a data e horário do sistema com /horario.\n";
         bot->sendMessage(chat_id, mensagem, "");
     }
     else if (texto == "/ajuda") {
@@ -241,9 +257,9 @@ void comandosTelegram(String texto, String nome){
         mensagem += "/lista -> Vizualizar a lista de usuários\n";
         mensagem += "/termometro -> Vizualizar a temperatura e umidade\n";
         mensagem += "/novaescala -> Criar uma escala de horário\n";
-        mensagem += "/hora -> Ajustar a hora e data do sistema\n";
+        mensagem += "/horario -> Ajustar a hora e data do sistema\n";
         mensagem += "/teste -> Testar comunicação com o sistema\n";
-        mensagem += "/foto -> Para tirar uma foto\n";
+        mensagem += "/foto -> Tira uma foto\n";
         bot->sendMessage(chat_id, mensagem, "");
     }
     else if(texto == "/cadastro"){
@@ -263,8 +279,13 @@ void comandosTelegram(String texto, String nome){
     else if(texto == "/novaescala"){
         
     }
-    else if(texto == "/hora"){
-        
+    else if(texto == "/horario"){
+        tipoHorarioWiFi = true;
+        String mensagem = "Insira a data e horário no padrão:\nDD/MM/AA-hh:mm:ss\n";
+        mensagemParaTelegram(mensagem);
+        while (!flagHorario)
+          mensagemTelegram();
+        tipoHorarioWiFi = false;
     }
 
     else if(texto == "/foto"){
@@ -314,4 +335,16 @@ void acessoLiberadoWiFi(String nomeUsuario, int tipoEntrada){
       bot->sendMessage(chat_id, mensagem, "");
     }
     
+}
+
+void configHorario(String texto){
+    String dia = texto.substring(0,2);
+    String mes = texto.substring(3,5);
+    String ano = texto.substring(6,8);
+    String hora = texto.substring(9,11);
+    String minuto = texto.substring (12,14);
+    String segundo = texto.substring (15);
+    setHorario (dia.toInt(), mes.toInt(), ano.toInt(), hora.toInt(), minuto.toInt(), segundo.toInt());
+    mensagemParaTelegram (getHorario());
+    mensagemParaTelegram (getData());
 }
