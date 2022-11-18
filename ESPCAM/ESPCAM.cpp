@@ -116,7 +116,7 @@ void verificaConexao()
 }
 
 void testeESPComunicacao()
-{  
+{
     while(!Serial1.available());
 
     String mensagem = Serial1.readString();
@@ -139,7 +139,8 @@ void testeESPComunicacao()
         ESP.restart();
     }
 
-    else if(mensagem == "foto"){
+    else if(mensagem == "foto")
+    {
         sendPhoto = true;
     }
 }

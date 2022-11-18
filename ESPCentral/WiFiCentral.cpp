@@ -11,6 +11,7 @@
 #include "ESPCentral.hpp"
 #include "RFIDCentral.hpp"
 #include "RTCCentral.hpp"
+#include "DHTCentral.hpp"
 
 #include <WiFi.h>
 #include <ESP32Ping.h>
@@ -254,10 +255,12 @@ void comandosTelegram(String texto, String nome){
         mensagem += "Os comandos que você pode utilizar são: \n";
         mensagem += "/cadastro -> Comando utilizado para cadastrar um novo usuário\n";
         mensagem += "/usuario -> Visualizar um usuário em específico\n";
+        mensagem += "/deletausuario -> Exclui um usuário\n";
         mensagem += "/lista -> Vizualizar a lista de usuários\n";
         mensagem += "/termometro -> Vizualizar a temperatura e umidade\n";
         mensagem += "/novaescala -> Criar uma escala de horário\n";
-        mensagem += "/horario -> Ajustar a hora e data do sistema\n";
+        mensagem += "/novohorario -> Ajustar a hora e data do sistema\n";
+        mensagem += "/verhorario -> Ver hora e data do sistema\n";
         mensagem += "/teste -> Testar comunicação com o sistema\n";
         mensagem += "/foto -> Tira uma foto\n";
         bot->sendMessage(chat_id, mensagem, "");
@@ -270,22 +273,33 @@ void comandosTelegram(String texto, String nome){
     else if(texto == "/usuario"){
         
     }
-    else if(texto == "/lista"){
+    else if(texto == "/deletausuario"){
+        mensagemParaTelegram("Insira o ID do usuário\n");
         
     }
+    else if(texto == "/lista"){
+        listaTelegram();
+    }
     else if(texto == "/termometro"){
-        
+        atualizarDHTTelegram();
     }
     else if(texto == "/novaescala"){
         
     }
-    else if(texto == "/horario"){
+    else if(texto == "/novohorario"){
         tipoHorarioWiFi = true;
         String mensagem = "Insira a data e horário no padrão:\nDD/MM/AA-hh:mm:ss\n";
         mensagemParaTelegram(mensagem);
         while (!flagHorario)
           mensagemTelegram();
+        flagHorario = false;
         tipoHorarioWiFi = false;
+    }
+
+    else if(texto == "/verhorario"){
+        String mensagem = "Horário: " + getHorario() + "\n";
+        mensagem += "Data: " + getData() + "\n";
+        mensagemParaTelegram(mensagem);
     }
 
     else if(texto == "/foto"){

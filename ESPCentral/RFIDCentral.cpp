@@ -241,6 +241,7 @@ void cadastraTAG_SD(){
     tipoCadastro =false;
     dados = SD.open(IDtagChar, FILE_APPEND);
     dados.print(nomeCadastro);
+    dados.println(IDtag);
     dados.close();
     mensagem = "TAG cadastrada com sucesso!\n";
     mensagemParaTelegram(mensagem);
@@ -251,7 +252,7 @@ void cadastraTAG_SD(){
 void jaCadastrado(){
     jaCadastradoFlag = true;
     Serial.println("TAG ja cadastrada");
-    String mensagem = "TAG já cadastrado!";
+    String mensagem = "TAG já cadastrada!";
     mensagemParaTelegram(mensagem);
 }
 
@@ -262,6 +263,9 @@ void acessoLiberado(){
 }
 void acessoNegado(){
     Serial.println("Cartão não encontrado");
+    String mensagem = "Alguém utilizou uma TAG não cadastrada na residência!";
+    mensagemParaTelegram(mensagem);
+    Serial1.print("foto");
 }
 
 void setCadastro(const bool x){
@@ -269,5 +273,49 @@ void setCadastro(const bool x){
 }
 
 void salvaNomeCadastro (String nome){
-  nomeCadastro = nome + "/";
+    nomeCadastro = nome + "/";
+}
+
+void listaTelegram(){
+
+    String lista = "Lista de usuários no formato (Nome/ID):\n";
+    String IDtagTemp = "";
+    dados = SD.open("/Dados.txt");
+
+    if (dados){
+        while(dados.available()){
+            char letra = dados.read();
+
+            if (isPrintable(letra)){
+                IDtagTemp.concat(letra);
+            }
+
+            else if(letra == '\n'){
+                String IDtagTotal = "/" + IDtagTemp + ".txt";
+                char IDtagChar[15];
+                IDtagTotal.toCharArray(IDtagChar, 15);
+                File dadosTemp = SD.open (IDtagChar);
+                IDtagTemp = "";
+                while (dadosTemp.available()){
+                  char letraTemp = dadosTemp.read();
+
+                  if (isPrintable(letraTemp)){
+                    IDtagTemp.concat(letraTemp);
+                  }
+
+                  else if (letraTemp == '\n'){
+                    lista += "-";
+                    lista += IDtagTemp;
+                    lista += "\n";
+                    dadosTemp.close();
+                  }
+                }
+                IDtagTemp = "";
+            }
+        }
+        dados.close();
+        mensagemParaTelegram (lista);
+        Serial.print(lista);
+    }
+
 }

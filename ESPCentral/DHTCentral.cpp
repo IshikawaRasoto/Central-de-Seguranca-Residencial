@@ -5,6 +5,7 @@
 */
 
 #include "DHTCentral.hpp"
+#include "WiFiCentral.hpp"
 
 #include <DHT.h>
 #include "defineESPCentral.hpp"
@@ -30,6 +31,25 @@ void atualizarDHT(float* umidade, float* temperatura){
     float t = *temperatura;
     float u = *umidade;
 
+    String mensagem = "Temperatura: " + String (t) + "\n";
+    mensagem +=  "Umidade: %" + String(u) + "\n";
+    
     Serial.print("Temperatura: " + String(t));
     Serial.println("Umidade %: " + String(u));
+}
+
+void atualizarDHTTelegram () {
+    float u = dht.readHumidity();
+    float t = dht.readTemperature();
+
+    if(isnan(u) || isnan(t)){
+        mensagemParaTelegram("Falha na leitura do Sensor DHT\n");
+        return;
+    }
+
+    String mensagem = "Temperatura: " + String (t) + "°C\n";
+    mensagem +=  "Umidade: " + String(u) + "%\n";
+
+    mensagemParaTelegram(mensagem);
+
 }

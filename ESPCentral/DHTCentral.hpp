@@ -10,3 +10,4 @@
 
 void atualizarDHT(float* umidade, float* temperatura);
 void inicializaDHT();
+void atualizarDHTTelegram();

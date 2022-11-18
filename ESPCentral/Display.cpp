@@ -2,7 +2,6 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h>
 #include "defineESPCentral.hpp"
-#include "ESPCentral.hpp"
 #include "Display.hpp"
 
 /*Definicao de Pinos*/
@@ -15,12 +14,10 @@ void serialDisplayConfig()
 }
 
 void atualizaStatus(const bool modoAP, const char statusWiFi, const bool alarme)
-{}
-/*
 {
   display.clearDisplay();
 
-  /*Modo AP
+  /*Modo AP*/
   if(modoAP) //Caso TRUE
   {
     display.clearDisplay();
@@ -35,16 +32,16 @@ void atualizaStatus(const bool modoAP, const char statusWiFi, const bool alarme)
     return;
   }
 
-  /*Mostar nome do projeto
+  /*Mostar nome do projeto*/
   display.setCursor(30,30);
   display.setTextSize(0.5);
-  display("Central\nDe\nSeguranca");
+  display.println ("Central\nDe\nSeguranca");
   display.display();
 
-  /*WiFi
+  /*WiFi*/
   switch(statusWiFi)
   {
-    /*Wifi OK
+    /*Wifi OK*/
     case NET_OK:
       display.setCursor(0,0); 
       display.setTextSize(1); 
@@ -53,7 +50,7 @@ void atualizaStatus(const bool modoAP, const char statusWiFi, const bool alarme)
 
     break;
 
-    /*Wifi NOK
+    /*Wifi NOK*/
     case SEM_NET:
       display.setCursor(0,0); 
       display.setTextSize(1); 
@@ -62,7 +59,7 @@ void atualizaStatus(const bool modoAP, const char statusWiFi, const bool alarme)
         
     break;
 
-    /*Sem Wifi
+    /*Sem Wifi*/
     case SEM_WIFI:
       display.setCursor(0,0); 
       display.setTextSize(0.5); 
@@ -72,7 +69,7 @@ void atualizaStatus(const bool modoAP, const char statusWiFi, const bool alarme)
     break;
   }
 
-  /*Alarme ativado
+  /*Alarme ativado*/
   if(alarme)
   {
     display.setCursor(15,0);
@@ -81,7 +78,7 @@ void atualizaStatus(const bool modoAP, const char statusWiFi, const bool alarme)
     display.display(); 
   }
 
-  /*Alarme desativado
+  /*Alarme desativado*/
   else if(!alarme)
   {
     display.setCursor(15,0);
