@@ -34,8 +34,10 @@ String botToken_Telegram;
 String chat_id; // Chat verificado pelo BOT, comparamos com o que temos cadastrado na EEPROM chatID
 bool flagNome = false;
 bool flagHorario = false;
+bool flagDeleta = false;
 bool tipoCadastroWiFi = false;
 bool tipoHorarioWiFi = false;
+bool tipoDeletaUsuario = false;
 
 /*
 // Checks for new messages every 1 second.
@@ -183,7 +185,19 @@ void handleSubmit(){
 
 void mensagemTelegram(){
     int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
-    if (tipoHorarioWiFi){
+    if (tipoDeletaUsuario){
+        while(numNewMessages){
+          Serial.println("got response");
+          for (int i=0; i<numNewMessages; i++){
+            String texto = bot->messages[i].text;
+            Serial.println(texto);
+            deletaUsuario(texto);
+            flagDeleta = true;
+          }
+          numNewMessages = bot->getUpdates(bot->last_message_received + 1); 
+        }
+    }
+    else if (tipoHorarioWiFi){
         while(numNewMessages){
         Serial.println("got response");
         for (int i=0; i<numNewMessages; i++){
@@ -195,7 +209,7 @@ void mensagemTelegram(){
         numNewMessages = bot->getUpdates(bot->last_message_received + 1);
       }
     }
-    if (tipoCadastroWiFi){
+    else if (tipoCadastroWiFi){
       while(numNewMessages){
         Serial.println("got response");
         for (int i=0; i<numNewMessages; i++){
@@ -247,7 +261,7 @@ void comandosTelegram(String texto, String nome){
     if (texto == "/iniciar"){
         String mensagem = nome + ", o sistema foi inicializado com sucesso!\n";
         mensagem += "Digite /ajuda para ver os comandos existentes.\n";
-        mensagem += "Além disso, não se esqueça de atualizar a data e horário do sistema com /horario.\n";
+        mensagem += "Além disso, não se esqueça de atualizar a data e horário do sistema com /novohorario.\n";
         bot->sendMessage(chat_id, mensagem, "");
     }
     else if (texto == "/ajuda") {
@@ -274,9 +288,15 @@ void comandosTelegram(String texto, String nome){
         
     }
     else if(texto == "/deletausuario"){
+        tipoDeletaUsuario = true;
         mensagemParaTelegram("Insira o ID do usuário\n");
-        
+        while (!flagDeleta){
+           mensagemTelegram();
+        }
+        flagDeleta = false;
+        tipoDeletaUsuario = false;
     }
+    
     else if(texto == "/lista"){
         listaTelegram();
     }

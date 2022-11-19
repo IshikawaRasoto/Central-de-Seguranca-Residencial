@@ -28,3 +28,4 @@ void setCadastro(const bool x);
 void listaCadastro();
 void salvaNomeCadastro(String nome);
 void listaTelegram ();
+void deletaUsuario(String texto);

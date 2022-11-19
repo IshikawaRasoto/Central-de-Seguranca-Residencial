@@ -319,3 +319,79 @@ void listaTelegram(){
     }
 
 }
+
+void deletaUsuario(String texto){
+    Serial.println("Deleta Usuario: " + texto);
+    File dadosTemp;
+    dadosTemp = SD.open("/dadosTemp.txt", FILE_WRITE);
+    dadosTemp.close();
+    bool flagID = true;
+    String IDtagTemp = "";
+    String IDtagTotal = "/" + texto + ".txt";
+    Serial.println("IDtagTotal: " + IDtagTotal);
+    char IDtagChar[15];
+    IDtagTotal.toCharArray(IDtagChar, 15);
+    SD.remove(IDtagChar);
+    dados = SD.open("/Dados.txt");
+    if (dados){
+      while (dados.available()){
+        char letra = dados.read();
+
+        if (isPrintable(letra)){
+          IDtagTemp.concat(letra);
+        }
+
+        else if(letra == '\n'){
+          if (IDtagTemp == texto){
+            mensagemParaTelegram ("Deletando cadastro...");
+            IDtagTemp = "";
+            flagID = false;
+          }
+          else {
+            dadosTemp = SD.open("/dadosTemp.txt", FILE_APPEND);
+            if (dadosTemp){
+              Serial.println("Printando em dadosTemp a tag: " + IDtagTemp);
+              dadosTemp.println(IDtagTemp);
+              dadosTemp.close();
+            }
+            IDtagTemp = "";
+          }
+        }
+      }
+      dados.close();
+    }
+    SD.remove ("/Dados.txt");
+    
+    delay(15);
+    dados = SD.open ("/Dados.txt", FILE_WRITE);
+    dados.close();
+    IDtagTemp = "";
+    dadosTemp = SD.open("/dadosTemp.txt");
+    if(dadosTemp){
+      while(dadosTemp.available()){
+        char letra = dadosTemp.read();
+
+        if (isPrintable(letra)){
+          IDtagTemp.concat(letra);
+        }
+
+        else if(letra == '\n'){
+          dados = SD.open("/Dados.txt", FILE_APPEND);
+          if (dados){
+            Serial.println("Printando em Dados a tag: " + IDtagTemp);
+            dados.println(IDtagTemp);
+            dados.close();
+          }
+          IDtagTemp = "";
+        }
+      }
+      dadosTemp.close();
+    }
+    SD.remove("/dadosTemp.txt");
+    if (flagID){
+      mensagemParaTelegram ("ID não encontrada, digite o comando novamente e insira uma ID válida.");
+    }
+    else {
+      mensagemParaTelegram ("Usuário deletado com sucesso!");
+    }
+}
