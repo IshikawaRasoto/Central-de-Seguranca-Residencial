@@ -33,11 +33,11 @@ float umidade;
 
 void configuracao(){
     serialConfig();
+    configPinos();
     inicializaEEPROM();
     carregarDados(&ssid, &senha, &token, &chatID);
     enviaDadosWiFi();
     inicializarVariaveis();
-    configPinos();
     configModulos();
 
 
@@ -64,6 +64,8 @@ void inicializarVariaveis(){
 
 void configPinos(){
     pinMode(BOTAO_AP, INPUT);
+    pinMode(BUZZER, OUTPUT);
+    digitalWrite(BUZZER, LOW);
 }
 
 void configModulos(){

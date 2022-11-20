@@ -41,3 +41,4 @@
 #define SD_MOSI_PIN      26
 #define SD_MISO_PIN      32
 #define SD_CS_PIN        33
+#define BUZZER 15

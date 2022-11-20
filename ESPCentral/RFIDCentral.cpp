@@ -145,8 +145,9 @@ void verificaTAG(String tipo){
                                   Serial.print("TipoEntrada = ");
                                   Serial.println(tipoEntrada);
                                   dados.close();
-                                  acessoLiberadoWiFi(IDtagTemp, tipoEntrada);
                                   acessoLiberado();
+                                  acessoLiberadoWiFi(IDtagTemp, tipoEntrada);
+                                  
                                 }
                                 else {
                                   IDtagTemp.concat (letra1);
@@ -258,6 +259,15 @@ void jaCadastrado(){
 
 void acessoLiberado(){
     Serial.println("Cartão encontrado");
+    digitalWrite (BUZZER, LOW);
+    delay(10);
+    digitalWrite (BUZZER, HIGH);
+    delay(100);
+    digitalWrite (BUZZER, LOW);
+    delay(100);
+    digitalWrite (BUZZER, HIGH);
+    delay(100);
+    digitalWrite (BUZZER, LOW);
     Serial1.print("abrir");
     
 }
