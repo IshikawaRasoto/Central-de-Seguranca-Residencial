@@ -9,27 +9,43 @@ void serialDisplayConfig()
   display.setContrast(50);
 }
 
-void atualizaStatus(const char statusWiFi, const bool alarme)
+void atualizaStatus(const char statusWiFi, const bool alarme, const bool alarme_disparado)
 {
-  display.clearDisplay();
-  mostrarNomeProjeto();
-  mostrarWifi(statusWifi);
-  mostrarAlarme(alarme);
+  if(alarme_disparado) 
+  {
+    mostrarDisparo();
+  }
+
+  else
+  {
+    display.clearDisplay();
+    mostrarNomeProjeto();
+    mostrarWifi(statusWifi);
+    mostrarAlarme(alarme);
+  }
 }
 
 void mostrarModoAP()
 {
-    /*Refazer proporcionalidade na tela e rever informações*/
-    display.clearDisplay();
-    display.setCursor(0,0);
-    display.setTextSize(2); 
-    display.println("MODO AP");
-    display.setTextSize(0.5);
-    display.println("ssid: Central_De_Seguranca");
-    display.println("senha: CentralSEG!2022");
-    display.println("link: 192.168.4.1");
-    display.display();   
-    return;
+  /*Refazer proporcionalidade na tela e rever informações*/
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.setTextSize(2); 
+  display.println("MODO AP");
+  display.setTextSize(0.5);
+  display.println("ssid: Central_De_Seguranca");
+  display.println("senha: CentralSEG!2022");
+  display.println("link: 192.168.4.1");
+  display.display();   
+}
+
+void mostrarDisparo()
+{
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.setTextSize(2); 
+  display.println("ALARME\nDISPARADO");
+  display.display();
 }
 
 void mostrarNomeProjeto()
