@@ -12,7 +12,6 @@ void serialDisplayConfig()
 void atualizaStatus(const char statusWiFi, const bool alarme)
 {
   display.clearDisplay();
-  mostrarModoAP(modoAP);
   mostrarNomeProjeto();
   mostrarWifi(statusWifi);
   mostrarAlarme(alarme);
