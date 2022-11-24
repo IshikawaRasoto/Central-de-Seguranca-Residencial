@@ -20,7 +20,7 @@ void atualizaStatus(const char statusWiFi, const bool alarme, const bool alarme_
   {
     display.clearDisplay();
     mostrarNomeProjeto();
-    mostrarWifi(statusWifi);
+    mostrarWifi(statusWiFi);
     mostrarAlarme(alarme);
   }
 }
@@ -42,10 +42,11 @@ void mostrarModoAP()
 void mostrarDisparo()
 {
   display.clearDisplay();
-  display.setCursor(0,0);
-  display.setTextSize(2); 
-  display.println("ALARME\nDISPARADO");
-  display.display();
+  display.drawBitmap(25,0, dispara_alarme, 40, 40, 1);
+  display.setCursor(20,40);
+  display.setTextSize(0.2); 
+  display.println("!Alarme!"); 
+  display.display(); 
 }
 
 void mostrarNomeProjeto()
@@ -75,7 +76,7 @@ void mostrarAlarme(const bool alarme)
   }
 }
 
-void mostrarWifi(const char statusWifi)
+void mostrarWifi(const char statusWiFi)
 {
   /*WiFi*/
   switch(statusWiFi)
@@ -105,6 +106,7 @@ void mostrarWifi(const char statusWifi)
     break;
   }
 }
+
 
   /*Explicacao dos Comandos
 

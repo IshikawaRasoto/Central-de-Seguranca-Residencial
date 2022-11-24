@@ -23,7 +23,7 @@
 #define RX_CAM 16
 #define TX_CAM 17
 
-#define BOTAO_AP 34
+#define BOTAO_AP 13
 #define PINO_MOVIMETO 14
 
 #define SCK_PINO 18

@@ -19,7 +19,7 @@ String token;
 
 
 //Variáveis do Sistema
-volatile bool modoAP;
+bool modoAP;
 bool alarme;
 bool disparaAlarme;
 volatile char statusWiFi;
@@ -146,10 +146,12 @@ void verificaComunicacao(){
     if(mensagem == "TesteComunicacao"){
         statusComunicacao = true;
         Serial.println("Comunicação Serial OK");
-        return;
+        //return;
+    }else{
+        statusComunicacao = false;
+        Serial.println("Comunicação Serial NOK");
     }
-    statusComunicacao = false;
-    Serial.println("Comunicação Serial NOK");
+    
 
     while(Serial.available()){
         String mensagemSerial = Serial.readString();
@@ -173,4 +175,4 @@ void movimentoDetectado(){
         disparaAlarme = true;
 }
 
-void setModoAP(volatile bool ap){modoAP = ap;}
+void setModoAP(bool ap){modoAP = ap;}

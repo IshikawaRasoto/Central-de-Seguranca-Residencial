@@ -39,6 +39,8 @@ bool tipoCadastroWiFi = false;
 bool tipoHorarioWiFi = false;
 bool tipoDeletaUsuario = false;
 
+bool inicializouTelegram = false;
+
 /*
 // Checks for new messages every 1 second.
 int botRequestDelay = 1000;
@@ -61,10 +63,10 @@ void conectaWiFi(){
     ssid_Telegram.toCharArray(char_ssid, TAMANHO_STRING);
     senha_Telegram.toCharArray(char_senha, TAMANHO_STRING);
 
-    WiFi.mode(WIFI_STA);
+    //WiFi.mode(WIFI_STA);
     WiFi.begin(char_ssid, char_senha);
     client.setCACert(TELEGRAM_CERTIFICATE_ROOT);
-    delay(3000);
+    delay(6000);
 }
 
 void testeConexao(volatile char* statusWiFi)
@@ -90,6 +92,7 @@ void testeConexao(volatile char* statusWiFi)
 }
 
 void conectaTelegram(){
+    inicializouTelegram = true;
     Serial.println("Conecta Telegram");
     chatID_Telegram = EEPROM.readString(EEPROM_CHATID);
     botToken_Telegram = EEPROM.readString(EEPROM_TOKEN);
@@ -184,6 +187,8 @@ void handleSubmit(){
 /* *************************************************** */
 
 void mensagemTelegram(){
+    if(!inicializouTelegram)
+      return;
     int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
     if (tipoDeletaUsuario){
         while(numNewMessages){
