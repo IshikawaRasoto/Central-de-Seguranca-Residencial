@@ -10,19 +10,6 @@
 #include <SPI.h>
 #include <SD.h>
 
-class Usuarios {
-    public:
-        String Nome;
-        String ID;
-        String Sair;
-        bool flagSair;
-        String Entrar;
-        bool flagEntrar;
-
-        Usuarios(String ID = "");
-        ~Usuarios();
-};
-
 extern bool flagCadastro;
 
 void configuraRFID_SD();
@@ -42,4 +29,3 @@ void listaCadastro();
 void salvaNomeCadastro(String nome);
 void listaTelegram ();
 void deletaUsuario(String texto);
-void configuraVetorUsuarios();

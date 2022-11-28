@@ -42,11 +42,10 @@ void mostrarModoAP()
 void mostrarDisparo()
 {
   display.clearDisplay();
-  display.drawBitmap(25,0, dispara_alarme, 40, 40, 1);
-  display.setCursor(20,40);
-  display.setTextSize(0.2); 
-  display.println("!Alarme!"); 
-  display.display(); 
+  display.setCursor(0,0);
+  display.setTextSize(2); 
+  display.println("ALARME\nDISPARADO");
+  display.display();
 }
 
 void mostrarNomeProjeto()
@@ -106,7 +105,6 @@ void mostrarWifi(const char statusWiFi)
     break;
   }
 }
-
 
   /*Explicacao dos Comandos
 

@@ -24,15 +24,11 @@ Funções Principais
 *************************************************************/
 
 void setup(){
-    //attachInterrupt(BOTAO_AP, botaoAcessoAP, RISING);
     configuracao();
-    pinMode(BOTAO_AP, INPUT);
+    attachInterrupt(BOTAO_AP, botaoAcessoAP, RISING);
     attachInterrupt(PINO_MOVIMETO, sensorMovimento, RISING);
 }
 
 void loop(){
-    if (BOTAO_AP == HIGH){
-      setModoAP(true);
-    }
     executar();
 }

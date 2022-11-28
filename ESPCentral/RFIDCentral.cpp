@@ -14,9 +14,6 @@
  int tipoEntrada;
 //using namespace ext;
 
-Usuarios *vetorUsuarios[10];
-int numVetorUsuarios = 0;
-
 byte sdaPins[] = {SDA_ENTRADA, SDA_SAIDA};
 
 MFRC522 mfrc522[2];
@@ -54,8 +51,6 @@ void configuraRFID_SD(){
         Serial.print(F(": "));
         mfrc522[reader].PCD_DumpVersionToSerial();
     }
-
-    configuraVetorUsuarios();
 
 }
 
@@ -410,81 +405,3 @@ void deletaUsuario(String texto){
       mensagemParaTelegram ("Usuário deletado com sucesso!");
     }
 }
-
-void configuraVetorUsuarios(){
-    String texto = "";
-    dados = SD.open("/Dados.txt");
-
-    if (dados){
-      while (dados.available()){
-        char letra = dados.read();
-
-        if (isPrintable(letra)){
-          texto.concat(letra);
-        }
-
-        else if (letra == '/n'){
-          bool flagEscala = false;
-          vetorUsuarios[numVetorUsuarios] = new Usuarios();
-          String textoTotal = "/" + texto + ".txt";
-          char textoChar[15];
-          int i = 0;
-          textoTotal.toCharArray(textoChar, 15);
-          File dadosTemp = SD.open(textoChar);
-          texto = "";
-          if(dadosTemp){
-            while(dadosTemp){
-              char letraTemp = dadosTemp.read();
-              if(isPrintable(letra)){
-                if(letra == '/'){
-                  vetorUsuarios[numVetorUsuarios]->Nome = texto;
-                  texto = "";
-                }
-
-                else if(letra == ':'){
-                  flagEscala = true;
-                  vetorUsuarios[numVetorUsuarios]->Sair = texto;
-                  texto = "";
-                }
-
-                else {
-                  texto.concat(letraTemp);
-                }
-              }
-
-              else if (letra == '\n'){
-                if(i == 0){
-                  vetorUsuarios[numVetorUsuarios]->ID = texto;
-                  texto = "";
-                  i++;
-                }
-
-                else if(i == 1){
-                  vetorUsuarios[numVetorUsuarios]->Entrar = texto;
-                  texto = "";
-                }
-              }
-              
-            }
-          }
-          if (flagEscala){
-            vetorUsuarios[numVetorUsuarios]->flagEntrar = true; // possui um leve erro
-            vetorUsuarios[numVetorUsuarios]->flagSair = true;
-          }
-          numVetorUsuarios ++;
-          texto = "";
-        }
-      }
-    }
-}
-
-Usuarios::Usuarios(String ID):
-    Nome(""),
-    ID(ID),
-    Sair(""),
-    flagSair(false),
-    Entrar(""),
-    flagEntrar(false)
-{}
-
-Usuarios::~Usuarios(){}

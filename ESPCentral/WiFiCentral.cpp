@@ -39,7 +39,7 @@ bool tipoCadastroWiFi = false;
 bool tipoHorarioWiFi = false;
 bool tipoDeletaUsuario = false;
 
-bool inicializouTelegram = false;
+char statusWiFi;
 
 /*
 // Checks for new messages every 1 second.
@@ -63,37 +63,39 @@ void conectaWiFi(){
     ssid_Telegram.toCharArray(char_ssid, TAMANHO_STRING);
     senha_Telegram.toCharArray(char_senha, TAMANHO_STRING);
 
-    //WiFi.mode(WIFI_STA);
+    WiFi.mode(WIFI_STA);
     WiFi.begin(char_ssid, char_senha);
     client.setCACert(TELEGRAM_CERTIFICATE_ROOT);
-    delay(6000);
+    delay(3000);
 }
 
-void testeConexao(volatile char* statusWiFi)
+void testeConexao()
 {
     bool ping = Ping.ping("www.google.com", 3);
     if(ping)
     {
         Serial.println("NET OK");
-        (*statusWiFi) = NET_OK;
+        (statusWiFi) = NET_OK;
         return;
     }
 
     if(WiFi.status() == WL_CONNECTED)
     {
         Serial.println("NET NOK");   
-        (*statusWiFi) = SEM_NET;
+        (statusWiFi) = SEM_NET;
         return;
     }
     
     Serial.println("sem WIFI");
-    (*statusWiFi) = SEM_WIFI;
+    (statusWiFi) = SEM_WIFI;
     conectaWiFi();
 }
 
 void conectaTelegram(){
-    inicializouTelegram = true;
+    if(getStatusWiFi() != NET_OK)
+        return; 
     Serial.println("Conecta Telegram");
+    
     chatID_Telegram = EEPROM.readString(EEPROM_CHATID);
     botToken_Telegram = EEPROM.readString(EEPROM_TOKEN);
 
@@ -107,8 +109,8 @@ void conectaTelegram(){
 
 
 bool enviaFormulario(){
-    const char* ssid_AP = "Central_De_Seguranca";
-    const char* senha_AP = "CentralSEG!2022";
+    const char* ssid_AP = "Central_Seguranca";
+    const char* senha_AP = "12345678";
 
     WiFi.softAP(ssid_AP, senha_AP);
 
@@ -182,13 +184,16 @@ void handleSubmit(){
 }
 
 
+void setStatusWiFi(const char x){statusWiFi = x;}
+const char getStatusWiFi(){return statusWiFi;}
+
 /* *************************************************** */
 /* Código para o Telegram */
 /* *************************************************** */
 
 void mensagemTelegram(){
-    if(!inicializouTelegram)
-      return;
+    if(getStatusWiFi() != NET_OK)
+        return;
     int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
     if (tipoDeletaUsuario){
         while(numNewMessages){

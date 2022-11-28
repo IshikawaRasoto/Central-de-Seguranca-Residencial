@@ -9,7 +9,7 @@
 #include <Arduino.h>
 
 void conectaWiFi();
-void testeConexao(volatile char* statusWiFi);
+void testeConexao();
 
 void conectaTelegram();
 
@@ -26,3 +26,6 @@ void mensagemParaTelegram(String mensagem);
 bool cadastroTelegram(bool tipoCadastro);
 void acessoLiberadoWiFi(String nomeUsuario, int tipoEntrada);
 void configHorario (String texto);
+
+void setStatusWiFi(const char x);
+const char getStatusWiFi();

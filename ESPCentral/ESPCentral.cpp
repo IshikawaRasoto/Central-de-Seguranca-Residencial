@@ -19,10 +19,10 @@ String token;
 
 
 //Variáveis do Sistema
-bool modoAP;
+volatile bool modoAP;
 bool alarme;
 bool disparaAlarme;
-volatile char statusWiFi;
+//volatile char statusWiFi;
 bool statusComunicacao;
 
 //Variáveis DHT11
@@ -42,10 +42,8 @@ void configuracao(){
 
 
     conectaWiFi();
-    testeConexao(&statusWiFi);
-    
-    if(statusWiFi == NET_OK)
-        conectaTelegram();
+    testeConexao();
+    conectaTelegram();
 }
 
 void serialConfig(){
@@ -59,7 +57,7 @@ void inicializarVariaveis(){
     statusComunicacao   = true;
     alarme              = false;
     disparaAlarme       = false;
-    statusWiFi          = SEM_WIFI;
+    setStatusWiFi(SEM_WIFI);
 }
 
 void configPinos(){
@@ -113,7 +111,7 @@ void verificacoes(){
 
 void verificaConexao(){
     Serial.println("Verifica Conexão");
-    testeConexao(&statusWiFi);
+    testeConexao();
 }
 
 void verificaModoAP(){
@@ -146,12 +144,10 @@ void verificaComunicacao(){
     if(mensagem == "TesteComunicacao"){
         statusComunicacao = true;
         Serial.println("Comunicação Serial OK");
-        //return;
-    }else{
-        statusComunicacao = false;
-        Serial.println("Comunicação Serial NOK");
+        return;
     }
-    
+    statusComunicacao = false;
+    Serial.println("Comunicação Serial NOK");
 
     while(Serial.available()){
         String mensagemSerial = Serial.readString();
@@ -175,4 +171,4 @@ void movimentoDetectado(){
         disparaAlarme = true;
 }
 
-void setModoAP(bool ap){modoAP = ap;}
+void setModoAP(volatile bool ap){modoAP = ap;}
