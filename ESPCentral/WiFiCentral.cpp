@@ -195,6 +195,8 @@ void mensagemTelegram(){
     if(getStatusWiFi() != NET_OK)
         return;
     int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
+
+
     if (tipoDeletaUsuario){
         while(numNewMessages){
           Serial.println("got response");
@@ -277,6 +279,8 @@ void comandosTelegram(String texto, String nome){
     else if (texto == "/ajuda") {
         String mensagem = "Olá, " + nome + ".\n";
         mensagem += "Os comandos que você pode utilizar são: \n";
+        mensagem += "/alarmeligado -> Liga o alarme\n";
+        mensagem += "/alarmedesligado -> Desliga o alarme\n";
         mensagem += "/cadastro -> Comando utilizado para cadastrar um novo usuário\n";
         mensagem += "/usuario -> Visualizar um usuário em específico\n";
         mensagem += "/deletausuario -> Exclui um usuário\n";
@@ -289,6 +293,17 @@ void comandosTelegram(String texto, String nome){
         mensagem += "/foto -> Tira uma foto\n";
         bot->sendMessage(chat_id, mensagem, "");
     }
+
+    else if(texto == "/alarmeligado"){
+        configAlarme(true);
+        mensagemParaTelegram("Alarme Ligado!");
+    }
+
+    else if(texto == "/alarmedesligado"){
+        configAlarme(false);
+        mensagemParaTelegram("Alarme Desligado!");
+    }
+
     else if(texto == "/cadastro"){
         bot->sendMessage(chat_id, "Aproxime a TAG para o cadastro.", "");
         setCadastro (true);

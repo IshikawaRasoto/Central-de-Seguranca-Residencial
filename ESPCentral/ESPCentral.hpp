@@ -24,9 +24,12 @@ void verificaConexao();
 void verificaComunicacao();
 void verificaModoAP();
 void verificaAlarme();
+void disparaAlarmeComunicacao();
 void configPinos();
 void configModulos();
+void verificaEscala();
 
 void movimentoDetectado();
 
 void setModoAP(volatile bool ap);
+void configAlarme(const bool alm);

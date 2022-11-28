@@ -12,6 +12,19 @@
 
 extern bool flagCadastro;
 
+class Usuarios {
+    public:
+        String Nome;
+        String ID;
+        String Sair;
+        bool flagSair;
+        String Entrar;
+        bool flagEntrar;
+
+        Usuarios(String ID = "");
+        ~Usuarios();
+};
+
 void configuraRFID_SD();
 void verificaRFID();
 void verificaTXT();
@@ -29,3 +42,4 @@ void listaCadastro();
 void salvaNomeCadastro(String nome);
 void listaTelegram ();
 void deletaUsuario(String texto);
+void configuraVetorUsuarios();

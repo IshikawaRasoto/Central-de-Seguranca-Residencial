@@ -1,4 +1,4 @@
-/*
+/*+
     RFIDCentral.cpp - Código pertencente ao projeto da matéria de Oficinas de Integração 1
     Projeto - Central de Segurança Residencial
     Equipe 20 - Rafael Eijy Ishikawa Rasoto, Gabriel Spadafora e Nicolas Riuichi Oda.
@@ -23,6 +23,10 @@ SPIClass SPI2 (HSPI);
 File dados;
 
 String IDtag = ""; 
+
+Usuarios *vetorUsuarios[10];
+
+int numVetorUsuarios = 0;
 
 bool jaCadastradoFlag = false;
 bool tipoCadastro = false;
@@ -51,7 +55,6 @@ void configuraRFID_SD(){
         Serial.print(F(": "));
         mfrc522[reader].PCD_DumpVersionToSerial();
     }
-
 }
 
 void verificaRFID(){
@@ -103,6 +106,7 @@ void verificaTXT(){
             dados.close();
         }
     }
+    configuraVetorUsuarios();
 
 }
 
@@ -405,3 +409,91 @@ void deletaUsuario(String texto){
       mensagemParaTelegram ("Usuário deletado com sucesso!");
     }
 }
+
+
+void configuraVetorUsuarios(){
+    Serial.println("Configura Vetor Usuários");
+    String texto = "";
+    dados = SD.open("/Dados.txt");
+
+    if (dados){
+      Serial.println("DADOS");
+      while (dados.available()){
+        char letra = dados.read();
+
+        if (isPrintable(letra)){
+          texto.concat(letra);
+        }
+        
+        else if (letra == '\n'){
+          Serial.println("ID Arquivo: " + texto);
+          bool flagEscala = false;
+          vetorUsuarios[numVetorUsuarios] = new Usuarios();
+          String textoTotal = "/" + texto + ".txt";
+          char textoChar[15];
+          int i = 0;
+          textoTotal.toCharArray(textoChar, 15);
+          File dadosTemp = SD.open(textoChar);
+          texto = "";
+          if(dadosTemp){
+            while(dadosTemp.available()){
+              char letraTemp = dadosTemp.read();
+              if(isPrintable(letraTemp)){
+                if(letraTemp == '/'){
+                  vetorUsuarios[numVetorUsuarios]->Nome = texto;
+                  Serial.println("Nome:" + texto);
+                  Serial.println("NOME VETOR: " + vetorUsuarios[numVetorUsuarios]->Nome);
+                  texto = "";
+                }
+
+                else if(letraTemp == ':'){
+                  flagEscala = true;
+                  vetorUsuarios[numVetorUsuarios]->Sair = texto;
+                  Serial.println("SAIR: " + vetorUsuarios[numVetorUsuarios]->Sair);
+                  texto = "";
+                }
+
+                else {
+                  texto.concat(letraTemp);
+                }
+              }
+
+              else if (letraTemp == '\n'){
+                if(i == 0){
+                  vetorUsuarios[numVetorUsuarios]->ID = texto;
+                  Serial.println("ID: " + vetorUsuarios[numVetorUsuarios]->ID);
+                  texto = "";
+                  i++;
+                }
+
+                else if(i == 1){
+                  vetorUsuarios[numVetorUsuarios]->Entrar = texto;
+                  Serial.println("ENTRAR: " + vetorUsuarios[numVetorUsuarios]->Entrar);
+                  texto = "";
+                }
+              }
+            }
+            dadosTemp.close();
+          }
+          if (flagEscala){
+            vetorUsuarios[numVetorUsuarios]->flagEntrar = true; // possui um leve erro
+            vetorUsuarios[numVetorUsuarios]->flagSair = true;
+          }
+          numVetorUsuarios ++;
+          texto = "";
+        }
+      }
+    dados.close();
+    }
+}
+
+Usuarios::Usuarios(String ID):
+    Nome(""),
+    ID(ID),
+    Sair(""),
+    flagSair(false),
+    Entrar(""),
+    flagEntrar(false)
+{}
+
+Usuarios::~Usuarios(){}

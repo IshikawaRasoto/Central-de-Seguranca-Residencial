@@ -21,9 +21,11 @@ String token;
 //Variáveis do Sistema
 volatile bool modoAP;
 bool alarme;
-bool disparaAlarme;
+bool flagDisparaAlarme;
 //volatile char statusWiFi;
 bool statusComunicacao;
+
+unsigned int timerEscala;
 
 //Variáveis DHT11
 float temperatura;
@@ -56,8 +58,9 @@ void inicializarVariaveis(){
     modoAP              = false;
     statusComunicacao   = true;
     alarme              = false;
-    disparaAlarme       = false;
+    flagDisparaAlarme       = false;
     setStatusWiFi(SEM_WIFI);
+    timerEscala = 0;
 }
 
 void configPinos(){
@@ -125,18 +128,22 @@ void verificaModoAP(){
 }
 
 void verificaComunicacao(){
-    
     Serial1.print("TesteComunicacao");
-
-    while(!Serial1.available());
-
-    /*bool comunicacao = false;
-    long int i = 0;
-    while(!Serial1.available() && i<240000000){
-        i++;
+    //Serial.println("TesteComunicacao");
+    delay(1250);
+    int i;
+    for(i = 0; i < 7 && !Serial1.available(); i++){
+        delay(2500);
+        Serial.print(i);
     }
-    if(Serial.available())
-        comunicacao = true;*/
+    if(i == 7){
+        Serial.println("SERIAL NOK");
+        statusComunicacao = false;
+        flagDisparaAlarme = true;
+        return;
+    }
+
+    flagDisparaAlarme = false;
 
 
     String mensagem = Serial1.readString();
@@ -146,8 +153,6 @@ void verificaComunicacao(){
         Serial.println("Comunicação Serial OK");
         return;
     }
-    statusComunicacao = false;
-    Serial.println("Comunicação Serial NOK");
 
     while(Serial.available()){
         String mensagemSerial = Serial.readString();
@@ -160,15 +165,40 @@ void verificaComunicacao(){
 }
 
 void verificaAlarme(){
-    if(!alarme)
-        return;
-    if(!statusComunicacao)
-        disparaAlarme = true;
+    if(!statusComunicacao){
+        flagDisparaAlarme = true;
+        disparaAlarmeComunicacao();
+    }     
 }
+
+void disparaAlarmeComunicacao(){
+    if (alarme && flagDisparaAlarme){
+        digitalWrite(BUZZER, HIGH);
+        mensagemParaTelegram("ALARME DISPARADO (ESPCAM DESCONECTADA)!");
+    }
+    else if (!alarme && flagDisparaAlarme){
+        digitalWrite(BUZZER, LOW);
+        mensagemParaTelegram("ALARME DESLIGADO (ESPCAM DESCONECTADA)!");
+    }
+    
+    
+}
+
+void verificaEscala(){
+    timerEscala++;
+    if(timerEscala == 5){
+        timerEscala = 0;
+        //funcao   
+    }
+}
+
 
 void movimentoDetectado(){
     if(alarme)
-        disparaAlarme = true;
+        flagDisparaAlarme = true;
 }
 
+
+
 void setModoAP(volatile bool ap){modoAP = ap;}
+void configAlarme(const bool alm){alarme = alm; if(!alm) flagDisparaAlarme = alm;}

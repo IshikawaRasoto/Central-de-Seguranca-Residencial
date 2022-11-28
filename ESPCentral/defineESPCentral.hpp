@@ -29,8 +29,8 @@
 #define SCK_PINO 18
 #define MISO_PINO 19
 #define MOSI_PINO 23
-#define SDA_SAIDA 21
-#define SDA_ENTRADA 12
+#define SDA_SAIDA 12//21
+#define SDA_ENTRADA 21//12
 //#define CE_DISPLAY 15
 //#define RST_DISPLAY 2
 //#define DCMD_DISPLAY 4
