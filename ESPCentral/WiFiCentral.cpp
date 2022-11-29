@@ -32,12 +32,18 @@ String senha_Telegram;
 String chatID_Telegram;
 String botToken_Telegram;
 String chat_id; // Chat verificado pelo BOT, comparamos com o que temos cadastrado na EEPROM chatID
+bool flagIniciar = true;
 bool flagNome = false;
 bool flagHorario = false;
 bool flagDeleta = false;
+bool flagEscala = false;
+bool flagImprime = false;
 bool tipoCadastroWiFi = false;
 bool tipoHorarioWiFi = false;
 bool tipoDeletaUsuario = false;
+bool tipoEscala = false;
+bool tipoIniciar = true;
+bool tipoImprime = false;
 
 char statusWiFi;
 
@@ -104,6 +110,10 @@ void conectaTelegram(){
     String mensagem = "Seja bem vindo a Central de Segurança Residencial!\n";
     mensagem += "Digite /iniciar para inicializar o sistema.\n";
     bot->sendMessage(chatID_Telegram, mensagem, "");
+    
+    while(flagIniciar){
+        mensagemTelegram();
+    }
 }
 
 
@@ -196,40 +206,74 @@ void mensagemTelegram(){
         return;
     int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
 
-
-    if (tipoDeletaUsuario){
+    if(tipoIniciar){
         while(numNewMessages){
-          Serial.println("got response");
-          for (int i=0; i<numNewMessages; i++){
-            String texto = bot->messages[i].text;
-            Serial.println(texto);
-            deletaUsuario(texto);
-            flagDeleta = true;
-          }
-          numNewMessages = bot->getUpdates(bot->last_message_received + 1); 
+            Serial.println("got response");
+            handleNewMessages(numNewMessages);
+            flagIniciar = false;
+            tipoIniciar = false;
+            numNewMessages = bot->getUpdates(bot->last_message_received + 1); 
+        }
+    }
+
+    else if(tipoImprime){
+        while(numNewMessages){
+            Serial.println("got response");
+            for (int i=0; i<numNewMessages; i++){
+                String texto = bot->messages[i].text;
+                Serial.println(texto);
+                imprimeUsuario(texto);
+                flagImprime = true;
+            }
+            numNewMessages = bot->getUpdates(bot->last_message_received + 1); 
+        }
+    }
+    else if (tipoEscala){
+        while(numNewMessages){
+            Serial.println("got response");
+            for (int i=0; i<numNewMessages; i++){
+                String texto = bot->messages[i].text;
+                Serial.println(texto);
+                novaEscala(texto);
+                flagEscala = true;
+            }
+        numNewMessages = bot->getUpdates(bot->last_message_received + 1); 
+        }
+    }
+
+    else if (tipoDeletaUsuario){
+        while(numNewMessages){
+            Serial.println("got response");
+            for (int i=0; i<numNewMessages; i++){
+                String texto = bot->messages[i].text;
+                Serial.println(texto);
+                deletaUsuario(texto);
+                flagDeleta = true;
+            }
+        numNewMessages = bot->getUpdates(bot->last_message_received + 1); 
         }
     }
     else if (tipoHorarioWiFi){
         while(numNewMessages){
-        Serial.println("got response");
-        for (int i=0; i<numNewMessages; i++){
-          String texto = bot->messages[i].text;
-          Serial.println(texto);
-          configHorario(texto);
-          flagHorario = true;
-        } 
+            Serial.println("got response");
+            for (int i=0; i<numNewMessages; i++){
+                String texto = bot->messages[i].text;
+                Serial.println(texto);
+                configHorario(texto);
+                flagHorario = true;
+            } 
         numNewMessages = bot->getUpdates(bot->last_message_received + 1);
       }
     }
     else if (tipoCadastroWiFi){
-      while(numNewMessages){
-        Serial.println("got response");
-        for (int i=0; i<numNewMessages; i++){
-          String texto = bot->messages[i].text;
-          Serial.println(texto);
-          salvaNomeCadastro(texto);
-          flagNome = true;
-        } 
+        while(numNewMessages){
+            Serial.println("got response");
+            for (int i=0; i<numNewMessages; i++){
+                String texto = bot->messages[i].text;
+                Serial.println(texto);
+                salvaNomeCadastro(texto);
+                flagNome = true;
+            } 
         numNewMessages = bot->getUpdates(bot->last_message_received + 1);
       }
       tipoCadastroWiFi = false;
@@ -310,7 +354,14 @@ void comandosTelegram(String texto, String nome){
         verificaRFID();
     }
     else if(texto == "/usuario"){
-        
+      
+        tipoImprime = true;
+        mensagemParaTelegram("Insira o ID do usuário\n");
+        while(!flagImprime){
+            mensagemTelegram();
+        }
+        flagImprime = false;
+        tipoImprime = false;
     }
     else if(texto == "/deletausuario"){
         tipoDeletaUsuario = true;
@@ -325,12 +376,20 @@ void comandosTelegram(String texto, String nome){
     else if(texto == "/lista"){
         listaTelegram();
     }
+
     else if(texto == "/termometro"){
         atualizarDHTTelegram();
     }
+
     else if(texto == "/novaescala"){
-        
+        tipoEscala = true;
+        mensagemParaTelegram("Insira o ID do usuário e o horário (apenas a hora) de saída e entrada esperada nesse formato: ID/SAÍDA:ENTRADA");
+        while (!flagEscala)
+            mensagemTelegram();
+        flagEscala = false;
+        tipoEscala = false;
     }
+
     else if(texto == "/novohorario"){
         tipoHorarioWiFi = true;
         String mensagem = "Insira a data e horário no padrão:\nDD/MM/AA-hh:mm:ss\n";
@@ -350,9 +409,15 @@ void comandosTelegram(String texto, String nome){
     else if(texto == "/foto"){
         Serial1.print("foto");
     }    
+
     else if(texto == "/teste"){
       bot->sendMessage(chat_id, "Comunicação bem-sucedida", "");
     }
+
+    else if(texto == "/objetos"){
+        
+    }
+
     else {
       bot->sendMessage(chat_id, "Insira um comando válido!", "");
     }

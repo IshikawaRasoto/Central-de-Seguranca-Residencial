@@ -68,6 +68,7 @@ void configInitCamera()
 
 void configuracao()
 {   
+    delay(2000);
     serialConfig();
     informacoesWiFi();
 
@@ -101,6 +102,9 @@ void serialConfig()
 {
     Serial.begin(115200);
     Serial1.begin(115200, SERIAL_8N1, RX_CENTRAL, TX_CENTRAL);
+    while(Serial1.available()){
+      char lixo = Serial1.read();
+    }
     Serial.println("Serial iniciada");
 }
 
@@ -122,9 +126,14 @@ void testeESPComunicacao()
     String mensagem = Serial1.readString();
     Serial.println(mensagem);
 
-    if(mensagem == "TesteComunicacao")
+    if(mensagem == "Teste")
     {
-        Serial1.print(mensagem);
+        if(statusWiFi == NET_OK)
+            Serial1.print("NETOK");
+        else if(statusWiFi == SEM_NET)
+            Serial1.print("NETNOK");
+        else if (statusWiFi == SEM_WIFI)
+            Serial1.print("WIFINOK");
     }
 
     else if(mensagem == "abrir")

@@ -20,8 +20,8 @@
 #define SEM_NET     1
 #define SEM_WIFI    0
 
-#define RX_CAM 16
-#define TX_CAM 17
+#define RX_CAM 17
+#define TX_CAM 16
 
 #define BOTAO_AP 34
 #define PINO_MOVIMETO 14
@@ -42,3 +42,5 @@
 #define SD_MISO_PIN      32
 #define SD_CS_PIN        33
 #define BUZZER 15
+
+#define MAX_USUARIOS 10

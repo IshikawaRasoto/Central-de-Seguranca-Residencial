@@ -7,8 +7,8 @@
 #pragma once
 
 #define TRANCA 14
-#define TX_CENTRAL 13
-#define RX_CENTRAL 12
+#define TX_CENTRAL 12
+#define RX_CENTRAL 13
 
 #define EEPROM_SSID     0
 #define EEPROM_SENHA    50

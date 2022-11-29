@@ -77,7 +77,7 @@ void configModulos(){
 }
 
 void enviaDadosWiFi(){
-    delay(6000);
+    delay(10000);
     Serial.println("SSID enviado: " + ssid);
     Serial1.print(ssid);
     delay(2000);
@@ -110,6 +110,7 @@ void verificacoes(){
     verificaConexao();
     verificaComunicacao();
     verificaAlarme();
+    verificaEscala();
 }
 
 void verificaConexao(){
@@ -128,7 +129,7 @@ void verificaModoAP(){
 }
 
 void verificaComunicacao(){
-    Serial1.print("TesteComunicacao");
+    Serial1.print("Teste");
     //Serial.println("TesteComunicacao");
     delay(1250);
     int i;
@@ -148,12 +149,22 @@ void verificaComunicacao(){
 
     String mensagem = Serial1.readString();
     Serial.println(mensagem);
-    if(mensagem == "TesteComunicacao"){
+    if(mensagem == "NETOK"){
         statusComunicacao = true;
         Serial.println("Comunicação Serial OK");
         return;
+    }else if(mensagem == "NETNOK"){
+        statusComunicacao = true;
+        Serial.println("Comunicação Serial OK e ESPCAM NET NOK");
+        mensagemParaTelegram("ESPCAM sem Internet!");
+        return;
+    }else if(mensagem == "WIFINOK"){
+         statusComunicacao = true;
+         Serial.println("Comunicação Serial OK e ESPCAM SEM WIFI");
+         mensagemParaTelegram("ESPCAM sem Wi-Fi!");
+         return;
     }
-
+/*
     while(Serial.available()){
         String mensagemSerial = Serial.readString();
         Serial.println("Mensagem Serial Recebida: " + mensagemSerial);
@@ -161,7 +172,7 @@ void verificaComunicacao(){
             setModoAP(true);
         }
     }
-    
+*/
 }
 
 void verificaAlarme(){
@@ -187,8 +198,9 @@ void disparaAlarmeComunicacao(){
 void verificaEscala(){
     timerEscala++;
     if(timerEscala == 5){
+        Serial.println("Verificando Escala...");
         timerEscala = 0;
-        //funcao   
+        verificaEscalaUsuarios(); 
     }
 }
 

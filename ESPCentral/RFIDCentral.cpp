@@ -7,8 +7,10 @@
 #include "defineESPCentral.hpp"
 #include "RFIDCentral.hpp"
 #include "WiFiCentral.hpp"
+#include "RTCCentral.hpp"
 #include <MFRC522.h>
 
+bool resetEscala = false;
  bool flagCadastro;
  String nomeCadastro = "";
  int tipoEntrada;
@@ -24,7 +26,7 @@ File dados;
 
 String IDtag = ""; 
 
-Usuarios *vetorUsuarios[10];
+Usuarios *vetorUsuarios[MAX_USUARIOS];
 
 int numVetorUsuarios = 0;
 
@@ -59,7 +61,7 @@ void configuraRFID_SD(){
 
 void verificaRFID(){
 
-    if(flagCadastro){
+    if(flagCadastro && numVetorUsuarios < MAX_USUARIOS){
       Serial.println("Aproxime a TAG para cadastrar");
       cadastraTAG();
       flagCadastro = false;
@@ -149,6 +151,20 @@ void verificaTAG(String tipo){
                                   Serial.print("TipoEntrada = ");
                                   Serial.println(tipoEntrada);
                                   dados.close();
+                                  int i = 0;
+
+                                  for (i = 0; i < numVetorUsuarios; i++){
+                                    if(vetorUsuarios[i]->ID == IDtag){
+                                      break;
+                                    }
+                                  }
+                                  if(tipoEntrada == 1){
+                                    vetorUsuarios[i]->emCasa = false;
+                                  }
+
+                                  else if (tipoEntrada == 0){
+                                    vetorUsuarios[i]->emCasa = true;
+                                  }
                                   acessoLiberado();
                                   acessoLiberadoWiFi(IDtagTemp, tipoEntrada);
                                   
@@ -248,6 +264,11 @@ void cadastraTAG_SD(){
     dados.print(nomeCadastro);
     dados.println(IDtag);
     dados.close();
+    for (int i = 0; i < MAX_USUARIOS; i++){
+      vetorUsuarios[i] = NULL;
+    }
+    numVetorUsuarios = 0;
+    configuraVetorUsuarios();
     mensagem = "TAG cadastrada com sucesso!\n";
     mensagemParaTelegram(mensagem);
     IDtag = "";
@@ -406,6 +427,11 @@ void deletaUsuario(String texto){
       mensagemParaTelegram ("ID não encontrada, digite o comando novamente e insira uma ID válida.");
     }
     else {
+      for(int i =0; i < MAX_USUARIOS; i++){
+        vetorUsuarios[i] = NULL;
+      }
+      numVetorUsuarios = 0;
+      configuraVetorUsuarios();
       mensagemParaTelegram ("Usuário deletado com sucesso!");
     }
 }
@@ -478,6 +504,7 @@ void configuraVetorUsuarios(){
           if (flagEscala){
             vetorUsuarios[numVetorUsuarios]->flagEntrar = true; // possui um leve erro
             vetorUsuarios[numVetorUsuarios]->flagSair = true;
+            vetorUsuarios[numVetorUsuarios]->escala = true;
           }
           numVetorUsuarios ++;
           texto = "";
@@ -491,9 +518,111 @@ Usuarios::Usuarios(String ID):
     Nome(""),
     ID(ID),
     Sair(""),
+    escala(false),
     flagSair(false),
     Entrar(""),
-    flagEntrar(false)
+    flagEntrar(false),
+    emCasa(true)
 {}
 
 Usuarios::~Usuarios(){}
+
+void novaEscala (String texto){
+    String id = texto.substring(0, texto.indexOf('/'));
+    String horario = texto.substring(texto.indexOf('/') + 1);
+
+    Serial.println("ID acessado: " + id);
+    Serial.println("Horario salvo: " + horario);
+
+    String idTotal = "/" + id + ".txt"; 
+    char idChar[15];
+
+    Serial.println("Arquivo a ser aberto: " + idTotal);
+
+    idTotal.toCharArray (idChar, 15);
+
+    dados = SD.open (idChar, FILE_APPEND);
+
+    if (dados){
+      dados.println(horario);
+      dados.close();
+      String horaEntrada  = horario.substring(0, horario.indexOf(':'));
+      String horaSaida    = horario.substring(horario.indexOf(':')+1);
+      for (int i = 0; i < numVetorUsuarios; i++){
+        if (vetorUsuarios[i]->ID == id){
+          vetorUsuarios[i]->Entrar      = horaEntrada;
+          vetorUsuarios[i]->Sair        = horaSaida;
+          vetorUsuarios[i]->flagEntrar  = true;
+          vetorUsuarios[i]->flagSair    = true;
+          vetorUsuarios[i]->escala      = true;
+        }
+      }
+      mensagemParaTelegram("Horário salvo com sucesso!");
+    }
+
+    else {
+      mensagemParaTelegram("Erro ao salvar o horário!");
+    }
+
+}
+
+void imprimeUsuario(String texto){
+    String idTotal = "/" + texto + ".txt";
+
+    char idChar[15];
+    idTotal.toCharArray(idChar, 15);
+    dados = SD.open(idChar);
+    texto = "";
+
+    if (dados){
+      while(dados.available()){
+        char letra = dados.read();
+        texto.concat(letra);
+      }
+    }
+    mensagemParaTelegram("Dados do usuário:\n");
+    mensagemParaTelegram(texto);
+
+}
+
+void verificaEscalaUsuarios (){
+
+    Serial.println("Verifica Escala Usuários");
+    String horario = getHorario();
+    String hora = horario.substring(0, horario.indexOf(':'));
+
+    if(hora.toInt() == 0 && resetEscala){
+        Serial.println("Reseta Escala");
+        for(int i = 0; i < numVetorUsuarios; i++){
+          if(vetorUsuarios[i]->escala){
+            vetorUsuarios[i]->flagEntrar = true;
+            vetorUsuarios[i]->flagSair   = true;
+          }
+        }
+        resetEscala = false;
+    }else if (hora != 0){
+        resetEscala = true;
+    }
+
+    for (int i = 0; i<numVetorUsuarios; i++){
+      Serial.println("Hora: " + String(hora.toInt()) + "Horario de Saida: " + vetorUsuarios[i]->Sair);
+      if ((vetorUsuarios[i]->flagSair == true) && (vetorUsuarios[i]->Sair.toInt() <= hora.toInt())){
+        vetorUsuarios[i]->flagSair = false;
+        Serial.println("Verificou Saida");
+        if(vetorUsuarios[i]->emCasa){
+          String texto = vetorUsuarios[i]->Nome;
+          texto += " não saiu da residência no horário previsto";
+          mensagemParaTelegram(texto);
+        }
+      }
+
+      if ((vetorUsuarios[i]->flagEntrar == true) && (vetorUsuarios[i]->Entrar.toInt() <= hora.toInt())){
+        vetorUsuarios[i]->flagEntrar = false;
+        if(!(vetorUsuarios[i]->emCasa)){
+          String texto = vetorUsuarios[i]->Nome;
+          texto += " não chegou na residência no horário previsto";
+          mensagemParaTelegram(texto);
+        }
+      }
+    }
+}

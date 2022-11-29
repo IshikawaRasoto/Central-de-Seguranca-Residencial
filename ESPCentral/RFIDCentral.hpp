@@ -17,9 +17,11 @@ class Usuarios {
         String Nome;
         String ID;
         String Sair;
+        bool escala;
         bool flagSair;
         String Entrar;
         bool flagEntrar;
+        bool emCasa;
 
         Usuarios(String ID = "");
         ~Usuarios();
@@ -43,3 +45,6 @@ void salvaNomeCadastro(String nome);
 void listaTelegram ();
 void deletaUsuario(String texto);
 void configuraVetorUsuarios();
+void novaEscala(String texto);
+void imprimeUsuario(String texto);
+void verificaEscalaUsuarios();
