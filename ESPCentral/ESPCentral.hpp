@@ -29,8 +29,11 @@ void disparaAlarmeSensor();
 void configPinos();
 void configModulos();
 void verificaEscala();
+void verificaCampainha();
+void verificaTemperatura();
 
 void movimentoDetectado();
+void campainhaAcionada();
 
 void setModoAP(volatile bool ap);
 void configAlarme(const bool alm);

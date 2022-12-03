@@ -23,6 +23,9 @@
 #define RX_CAM 17
 #define TX_CAM 16
 
+#define RX_ARDUINO 34 // NAO UTILIZADO
+#define TX_ARDUINO 4
+
 #define BOTAO_AP 13
 #define PINO_MOVIMETO 14
 
@@ -31,9 +34,6 @@
 #define MOSI_PINO 23
 #define SDA_SAIDA 12//21
 #define SDA_ENTRADA 21//12
-//#define CE_DISPLAY 15
-//#define RST_DISPLAY 2
-//#define DCMD_DISPLAY 4
 #define CS 5
 #define RESET 22
 #define DHT11_DATA 27
@@ -42,5 +42,6 @@
 #define SD_MISO_PIN      32
 #define SD_CS_PIN        33
 #define BUZZER 15
+#define CAMPAINHA 2
 
 #define MAX_USUARIOS 10

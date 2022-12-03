@@ -19,6 +19,9 @@ void IRAM_ATTR sensorMovimento(){
     movimentoDetectado();
 }
 
+void IRAM_ATTR campainha(){
+    campainhaAcionada();
+}
 /*************************************************************
 Funções Principais
 *************************************************************/
@@ -27,6 +30,7 @@ void setup(){
     configuracao();
     attachInterrupt(BOTAO_AP, botaoAcessoAP, RISING);
     attachInterrupt(PINO_MOVIMETO, sensorMovimento, RISING);
+    attachInterrupt(CAMPAINHA, campainha, RISING);
 }
 
 void loop(){

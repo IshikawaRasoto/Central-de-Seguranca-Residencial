@@ -19,11 +19,13 @@ String token;
 
 
 //Variáveis do Sistema
+volatile bool flagCampainha;
 volatile bool modoAP;
 volatile bool alarme;
 volatile bool flagDisparaAlarme;
 volatile bool flagDisparaAlarmeSensor;
 volatile bool flagSensorMovimento;
+bool flagTemperatura;
 //volatile char statusWiFi;
 bool statusComunicacao;
 
@@ -57,11 +59,13 @@ void serialConfig(){
 
 
 void inicializarVariaveis(){
-    modoAP              = false;
-    statusComunicacao   = true;
-    alarme              = false;
+    flagCampainha           = false;
+    modoAP                  = false;
+    statusComunicacao       = true;
+    alarme                  = false;
     flagDisparaAlarme       = false;
     flagDisparaAlarmeSensor = false;
+    flagTemperatura         = false;
     setStatusWiFi(SEM_WIFI);
     timerEscala = 0;
 }
@@ -112,8 +116,10 @@ void operacoes(){
 
 void verificacoes(){
     verificaModoAP();
+    verificaCampainha();
     verificaConexao();
     verificaComunicacao();
+    verificaTemperatura();
     verificaAlarme();
     verificaEscala();
 }
@@ -225,16 +231,43 @@ void verificaEscala(){
     }
 }
 
+void verificaCampainha(){
+    if(!flagCampainha)
+        return;
+
+    flagCampainha = false;
+    Serial.println("Campainha Ativada");
+
+    digitalWrite(BUZZER, HIGH);
+    delay(500);
+    digitalWrite(BUZZER, LOW);
+    
+    Serial1.print("foto");
+    mensagemParaTelegram("Campainha Acionada");
+}
+
+void verificaTemperatura(){
+    if(temperatura > 40.0){
+        flagTemperatura = true;
+        if(alarme){
+             digitalWrite(BUZZER, HIGH);
+             mensagemParaTelegram("ALARME DISPARADO (TEMPERATURA ELEVADA)!");
+             return;
+        }
+    }
+    digitalWrite(BUZZER, LOW);
+}
 
 void movimentoDetectado(){
   if (alarme){
      flagDisparaAlarmeSensor = true;
      flagSensorMovimento = true;
   }
-     
 }
 
-
+void campainhaAcionada(){
+    flagCampainha = true;
+}
 
 void setModoAP(volatile bool ap){modoAP = ap;}
 void configAlarme(const bool alm){alarme = alm; if(!alm) flagDisparaAlarme = alm;}
