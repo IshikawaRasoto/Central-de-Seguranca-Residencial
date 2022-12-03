@@ -30,7 +30,7 @@ void setup(){
     configuracao();
     attachInterrupt(BOTAO_AP, botaoAcessoAP, RISING);
     attachInterrupt(PINO_MOVIMETO, sensorMovimento, RISING);
-    attachInterrupt(CAMPAINHA, campainha, RISING);
+    attachInterrupt(CAMPAINHA, campainha, FALLING);
 }
 
 void loop(){

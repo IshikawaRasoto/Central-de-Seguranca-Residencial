@@ -26,6 +26,7 @@ volatile bool flagDisparaAlarme;
 volatile bool flagDisparaAlarmeSensor;
 volatile bool flagSensorMovimento;
 bool flagTemperatura;
+bool flagAlarmeDisplay;
 //volatile char statusWiFi;
 bool statusComunicacao;
 
@@ -55,6 +56,7 @@ void configuracao(){
 void serialConfig(){
     Serial.begin(115200);
     Serial1.begin(115200, SERIAL_8N1, RX_CAM, TX_CAM);
+    Serial2.begin(9600, SERIAL_8N1, RX_ARDUINO, TX_ARDUINO);
 }
 
 
@@ -66,6 +68,7 @@ void inicializarVariaveis(){
     flagDisparaAlarme       = false;
     flagDisparaAlarmeSensor = false;
     flagTemperatura         = false;
+    flagAlarmeDisplay       = false;
     setStatusWiFi(SEM_WIFI);
     timerEscala = 0;
 }
@@ -112,6 +115,7 @@ void operacoes(){
     verificaRFID();
     mensagemTelegram();
     verificaRFID();
+    atualizaDisplay();
 }
 
 void verificacoes(){
@@ -204,21 +208,21 @@ void verificaAlarme(){
 void disparaAlarmeComunicacao(){
     if (alarme && flagDisparaAlarme){
         digitalWrite(BUZZER, HIGH);
+        flagAlarmeDisplay = true;
         mensagemParaTelegram("ALARME DISPARADO (ESPCAM DESCONECTADA)!");
     }
     else if (!alarme && flagDisparaAlarme){
         digitalWrite(BUZZER, LOW);
+        flagAlarmeDisplay = false;
         mensagemParaTelegram("ALARME DESLIGADO (ESPCAM DESCONECTADA)!");
     }
-    
-    
 }
 
 void disparaAlarmeSensor(){
     if (flagDisparaAlarmeSensor){
         digitalWrite(BUZZER, HIGH);
+        flagAlarmeDisplay = true;
         mensagemParaTelegram("ALARME DISPARADO (MOVIMENTO DETECTADO)!");
-        
     }
 }
 
@@ -253,9 +257,37 @@ void verificaTemperatura(){
              digitalWrite(BUZZER, HIGH);
              mensagemParaTelegram("ALARME DISPARADO (TEMPERATURA ELEVADA)!");
              return;
+             flagAlarmeDisplay = true;
         }
     }
     digitalWrite(BUZZER, LOW);
+    flagAlarmeDisplay = false;
+}
+
+void atualizaDisplay(){
+    
+    String mensagemDisplay = (modoAP) ? "1" : "0";
+    mensagemDisplay += ":";
+    mensagemDisplay += (flagAlarmeDisplay) ? "1" : "0";
+    mensagemDisplay += ":";
+    mensagemDisplay += (alarme) ? "1" : "0";
+    mensagemDisplay += ":";
+    switch (getStatusWiFi())
+    {
+    case SEM_WIFI:
+        mensagemDisplay += "0";
+        break;
+    
+    case SEM_NET:
+        mensagemDisplay += "1";
+        break;
+    
+    case NET_OK:
+        mensagemDisplay += "2";
+        break;
+    }
+
+    Serial2.print(mensagemDisplay);
 }
 
 void movimentoDetectado(){
@@ -271,3 +303,4 @@ void campainhaAcionada(){
 
 void setModoAP(volatile bool ap){modoAP = ap;}
 void configAlarme(const bool alm){alarme = alm; if(!alm) flagDisparaAlarme = alm;}
+void setFlagAlarmeDisplay(const bool almdisp){flagAlarmeDisplay = almdisp;}

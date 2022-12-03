@@ -31,9 +31,12 @@ void configModulos();
 void verificaEscala();
 void verificaCampainha();
 void verificaTemperatura();
+void atualizaDisplay();
 
 void movimentoDetectado();
 void campainhaAcionada();
 
 void setModoAP(volatile bool ap);
 void configAlarme(const bool alm);
+
+void setFlagAlarmeDisplay(const bool almdisp);

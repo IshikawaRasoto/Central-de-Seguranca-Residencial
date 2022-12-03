@@ -352,6 +352,7 @@ void comandosTelegram(String texto, String nome){
 
     else if(texto == "/alarmedesligado"){
         configAlarme(false);
+        setFlagAlarmeDisplay(false);
         mensagemParaTelegram("Alarme Desligado!");
     }
 
@@ -419,10 +420,6 @@ void comandosTelegram(String texto, String nome){
 
     else if(texto == "/teste"){
       bot->sendMessage(chat_id, "Comunicação bem-sucedida", "");
-    }
-
-    else if(texto == "/objetos"){
-        
     }
 
     else {
