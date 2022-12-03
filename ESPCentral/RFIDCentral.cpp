@@ -297,10 +297,14 @@ void acessoLiberado(){
     
 }
 void acessoNegado(){
+    digitalWrite (BUZZER, HIGH);
+    delay(1000);
+    digitalWrite (BUZZER, LOW);
     Serial.println("Cartão não encontrado");
     String mensagem = "Alguém utilizou uma TAG não cadastrada na residência!";
     mensagemParaTelegram(mensagem);
     Serial1.print("foto");
+    
 }
 
 void setCadastro(const bool x){

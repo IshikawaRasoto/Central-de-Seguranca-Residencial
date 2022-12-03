@@ -20,8 +20,10 @@ String token;
 
 //Variáveis do Sistema
 volatile bool modoAP;
-bool alarme;
-bool flagDisparaAlarme;
+volatile bool alarme;
+volatile bool flagDisparaAlarme;
+volatile bool flagDisparaAlarmeSensor;
+volatile bool flagSensorMovimento;
 //volatile char statusWiFi;
 bool statusComunicacao;
 
@@ -59,6 +61,7 @@ void inicializarVariaveis(){
     statusComunicacao   = true;
     alarme              = false;
     flagDisparaAlarme       = false;
+    flagDisparaAlarmeSensor = false;
     setStatusWiFi(SEM_WIFI);
     timerEscala = 0;
 }
@@ -100,9 +103,11 @@ void executar(){
 }
 
 void operacoes(){
+    verificaRFID();
     atualizarDHT(&umidade, &temperatura);
     verificaRFID();
     mensagemTelegram();
+    verificaRFID();
 }
 
 void verificacoes(){
@@ -180,6 +185,14 @@ void verificaAlarme(){
         flagDisparaAlarme = true;
         disparaAlarmeComunicacao();
     }     
+    if (flagSensorMovimento && alarme){
+        disparaAlarmeSensor();
+    }
+    else if (flagSensorMovimento && !alarme){
+        digitalWrite(BUZZER , LOW);
+        flagSensorMovimento = false;
+        flagDisparaAlarmeSensor = false;
+    }
 }
 
 void disparaAlarmeComunicacao(){
@@ -195,6 +208,14 @@ void disparaAlarmeComunicacao(){
     
 }
 
+void disparaAlarmeSensor(){
+    if (flagDisparaAlarmeSensor){
+        digitalWrite(BUZZER, HIGH);
+        mensagemParaTelegram("ALARME DISPARADO (MOVIMENTO DETECTADO)!");
+        
+    }
+}
+
 void verificaEscala(){
     timerEscala++;
     if(timerEscala == 5){
@@ -206,8 +227,11 @@ void verificaEscala(){
 
 
 void movimentoDetectado(){
-    if(alarme)
-        flagDisparaAlarme = true;
+  if (alarme){
+     flagDisparaAlarmeSensor = true;
+     flagSensorMovimento = true;
+  }
+     
 }
 
 

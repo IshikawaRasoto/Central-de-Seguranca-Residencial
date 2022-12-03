@@ -45,6 +45,8 @@ bool tipoEscala = false;
 bool tipoIniciar = true;
 bool tipoImprime = false;
 
+bool flagBotTelegram = false;
+
 char statusWiFi;
 
 /*
@@ -82,6 +84,7 @@ void testeConexao()
     {
         Serial.println("NET OK");
         (statusWiFi) = NET_OK;
+        conectaTelegram();
         return;
     }
 
@@ -98,7 +101,7 @@ void testeConexao()
 }
 
 void conectaTelegram(){
-    if(getStatusWiFi() != NET_OK)
+    if(getStatusWiFi() != NET_OK || flagBotTelegram)
         return; 
     Serial.println("Conecta Telegram");
     
@@ -106,6 +109,8 @@ void conectaTelegram(){
     botToken_Telegram = EEPROM.readString(EEPROM_TOKEN);
 
     bot = new UniversalTelegramBot(botToken_Telegram, client);
+
+    flagBotTelegram = true;
 
     String mensagem = "Seja bem vindo a Central de Segurança Residencial!\n";
     mensagem += "Digite /iniciar para inicializar o sistema.\n";
@@ -202,7 +207,7 @@ const char getStatusWiFi(){return statusWiFi;}
 /* *************************************************** */
 
 void mensagemTelegram(){
-    if(getStatusWiFi() != NET_OK)
+    if(!flagBotTelegram)
         return;
     int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
 
@@ -290,6 +295,8 @@ void mensagemTelegram(){
 
 // Handle what happens when you receive new messages
 void handleNewMessages(int numNewMessages) {
+  if(!flagBotTelegram)
+      return;
   Serial.println("handleNewMessages");
   Serial.println(String(numNewMessages));
 
@@ -424,7 +431,13 @@ void comandosTelegram(String texto, String nome){
 }
 
 void mensagemParaTelegram(String mensagem){
-    bot->sendMessage(chat_id, mensagem, "");
+    if(flagBotTelegram){
+      bot->sendMessage(chat_id, mensagem, "");
+    }
+    else {
+      Serial.println("ESP32 NÃO ENVIOU MSG ( SEM NET )");
+    }
+    
 }
 
 bool cadastroTelegram(bool tipoCadastro){

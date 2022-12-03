@@ -25,6 +25,7 @@ void verificaComunicacao();
 void verificaModoAP();
 void verificaAlarme();
 void disparaAlarmeComunicacao();
+void disparaAlarmeSensor();
 void configPinos();
 void configModulos();
 void verificaEscala();
